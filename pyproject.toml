@@ -9,8 +9,12 @@ description = "Symbolic-to-numeric dynamical systems on R^n with robust ODE tool
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
-authors = [{ name = "REPLACE_ME", email = "REPLACE_ME" }]
-keywords = ["dynamical-systems", "ode", "symbolic", "numerical", "mathematics", "physics"]
+authors = [{ name = "Jacob Green", email = "jacobgreen1011@gmail.com" }]
+keywords = [
+    "dynamical-systems", "systems", "ode", "ivp", "initial-value-problem", "symbolic", 
+    "numerical", "mathematics", "physics", "chaos", "chaos-theory", "lyapunov", 
+    "phase", "phase-space", "phase-portrait", "bifurcation", 
+    "pendulum", "double-pendulum", "damped-pendulum"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Science/Research",

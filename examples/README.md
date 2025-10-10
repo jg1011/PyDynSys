@@ -1,6 +1,6 @@
 # PyFlow Examples
 
-This directory contains comprehensive examples demonstrating the PyFlow dynamical systems library.
+This directory contains comprehensive examples demonstrating the PyDynSys dynamical systems library.
 
 ## Running Examples
 
@@ -12,7 +12,10 @@ python examples/02_driven_oscillator.py
 # ... etc
 ```
 
-Outputs (plots) are saved to `examples/outputs/`.
+The relevant plots are saved to `examples/outputs/`.
+
+To run all, you can use our quick bash script `run_examples.sh` or our powershell script `run_examples.ps1`. 
+
 
 ## Example Overview
 

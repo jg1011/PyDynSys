@@ -3,8 +3,8 @@ Example 1: Simple Harmonic Oscillator (Autonomous System)
 
 Demonstrates:
 - Creating an autonomous system from a direct vector field
-- Default phase space (ℝ²)
-- Forward trajectory computation
+- Default phase space (R^dimension)
+- Forward trajectory computation 
 - Plotting phase portraits
 """
 

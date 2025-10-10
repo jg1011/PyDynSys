@@ -15,12 +15,10 @@ from .types import (
     # Phase space types
     PhaseSpace,
     TimeHorizon,
-    # Result types
-    SymbolicToVectorFieldResult,
 )
 
 # System builder
-from .sym_utils import SymbolicSystemBuilder
+from .sym_utils import SymbolicSystemBuilder, SymbolicToVectorFieldResult
 
 # Dynamical systems
 from .euclidean_sys import (
