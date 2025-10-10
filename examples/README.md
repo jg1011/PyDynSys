@@ -97,8 +97,8 @@ To run all, you can use our quick bash script `run_examples.sh` or our powershel
 
 ---
 
-### 06 - Performance Optimization
-**File**: `06_performance_optimization.py`
+### 06 - Performance Optimisation
+**File**: `06_performance_optimisation.py`
 
 **Demonstrates**:
 - Three ways to define phase spaces
@@ -142,28 +142,4 @@ For autonomous systems, can compute flow on intervals around t₀:
 - Useful for studying complete orbits
 
 ---
-
-## Dependencies
-
-Examples require:
-- `numpy`
-- `scipy`
-- `matplotlib`
-- `sympy`
-
-Install via:
-```bash
-pip install numpy scipy matplotlib sympy
-```
-
----
-
-## Next Steps
-
-After running these examples:
-1. Modify parameters to explore different behaviors
-2. Try your own vector fields
-3. Experiment with different phase space constraints
-4. Study the source code to understand the implementation
-5. Run the test suite: `pytest tests/`
 
