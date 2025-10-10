@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=61", "wheel", "setuptools_scm[toml]>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyDynSys"
+dynamic = ["version"]
+description = "Symbolic-to-numeric dynamical systems on R^n with robust ODE tooling"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "REPLACE_ME", email = "REPLACE_ME" }]
+keywords = ["dynamical-systems", "ode", "symbolic", "numerical", "mathematics", "physics"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+  "numpy>=2.0.0",
+  "scipy>=1.13.0",
+  "sympy>=1.12.0",
+  "matplotlib>=3.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/username/repo"
+Repository = "https://github.com/username/repo"
+Issues = "https://github.com/username/repo/issues"
+Changelog = "https://github.com/username/repo/releases"
+
+[project.optional-dependencies]
+full = [
+  # tests
+  "pytest>=8.0.0",
+  "pytest-cov>=4.0.0",
+  "pytest-mpl>=0.17.0",
+  "pillow>=10.0.0",
+  # notebooks
+  "jupyter>=1.0.0",
+  "ipykernel>=6.0.0",
+  "nbformat>=5.9.0",
+  "nbconvert>=7.0.0",
+  # dev
+  "mypy>=1.8.0",
+  "black>=23.0.0",
+  "ruff>=0.3.0",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests*", "LEGACY_LIB*"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+  "physics: physical law checks; may be slow",
+  "numerical: numerical method accuracy; may be slow",
+  "validation: programmatic behavior validation",
+  "symbolic_system_builder: checks for SymbolicSystemBuilder",
+  "euclidean_dynamical_system: EuclideanDS behavior checks",
+  "model: model tests",
+  "single_pendulum: single pendulum tests",
+  "double_pendulum: double pendulum tests",
+]
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"
