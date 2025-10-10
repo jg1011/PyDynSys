@@ -19,7 +19,7 @@ def main():
     print("Example 3: Symbolic System Construction")
     print("=" * 70)
     
-    # Example 3a: Autonomous system from symbolic equations
+    ### Example A: Autonomous system from symbolic equations ###
     print("\n[3a] AUTONOMOUS SYSTEM: Van der Pol Oscillator")
     print("=" * 70)
     
@@ -31,7 +31,7 @@ def main():
     # Define parameters
     mu = sp.Symbol('mu', positive=True, real=True)
     
-    # Van der Pol equations: x'' - μ(1-x²)x' + x = 0
+    # Van der Pol equations: x'' - mu(1-x^2)x' + x = 0
     # First-order form:
     equations_vdp = [
         sp.diff(x, t) - y,
@@ -68,7 +68,8 @@ def main():
     solution = system_vdp.trajectory(x0, t_span, t_eval)
     print(f"    ✓ Solution computed successfully")
     
-    # Example 3b: Non-autonomous system from symbolic equations
+    ### Example B: Non-autonomous system from symbolic equations ###
+    
     print("\n" + "=" * 70)
     print("[3b] NON-AUTONOMOUS SYSTEM: Parametrically Driven Oscillator")
     print("=" * 70)
@@ -81,7 +82,7 @@ def main():
     # Parameters
     omega_0, omega_d, A = sp.symbols('omega_0 omega_d A', real=True, positive=True)
     
-    # Parametrically driven: x'' + ω₀²x = A·sin(ω_d·t)
+    # Parametrically driven: x'' + omega_0^2 * x = A * sin(omega_d * t)
     equations_driven = [
         sp.diff(x, t) - y,
         sp.diff(y, t) + omega_0**2 * x - A * sp.sin(omega_d * t)
@@ -161,12 +162,6 @@ def main():
     plt.tight_layout()
     plt.savefig('examples/outputs/03_symbolic_construction.png', dpi=150, bbox_inches='tight')
     print("    ✓ Plot saved to examples/outputs/03_symbolic_construction.png")
-    
-    print("\n" + "=" * 70)
-    print("Key Takeaway: Factory method auto-detects system type from equations!")
-    print("  - No explicit time in derivatives → Autonomous")
-    print("  - Explicit time in derivatives → Non-autonomous")
-    print("=" * 70)
 
 
 if __name__ == "__main__":

@@ -34,7 +34,7 @@ def main():
         x, y = state
         return np.array([y, -x])
     
-    # Create system with default phase space X = ℝ²
+    # Create system with default phase space X = R^2
     print("\n[1] Creating autonomous system...")
     system = AutonomousEuclideanDS(
         dimension=2,
@@ -42,7 +42,7 @@ def main():
         phase_space=PhaseSpace.euclidean(2)  # Explicit, but this is the default
     )
     print(f"    ✓ System created with dimension = {system.dimension}")
-    print(f"    ✓ Phase space: ℝ²")
+    print(f"    ✓ Phase space: R^2")
     
     # Define initial conditions and time span
     x0 = np.array([1.0, 0.0])  # Initial position x=1, velocity y=0
@@ -97,10 +97,6 @@ def main():
     plt.tight_layout()
     plt.savefig('examples/outputs/01_harmonic_oscillator.png', dpi=150, bbox_inches='tight')
     print("    ✓ Plot saved to examples/outputs/01_harmonic_oscillator.png")
-    
-    print("\n" + "=" * 70)
-    print("Example complete!")
-    print("=" * 70)
 
 
 if __name__ == "__main__":

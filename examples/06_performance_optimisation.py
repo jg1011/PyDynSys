@@ -18,16 +18,15 @@ def main():
     print("Example 6: PhaseSpace Performance Optimization")
     print("=" * 70)
     
-    # Define a simple vector field
+    # Define a simple vector field, simple harmonic oscillator
     def simple_flow(state):
         x, y = state
         return np.array([y, -x])
     
     dimension = 2
     
-    # ========================================================================
-    # Approach 1: Symbolic Only (Auto-compiled)
-    # ========================================================================
+    ### Approach 1: Symbolic Only (Auto-compiled) ###
+    
     print("\n[1] SYMBOLIC ONLY: Auto-compilation")
     print("=" * 70)
     
@@ -59,9 +58,8 @@ def main():
     print(f"    Test time: {test_time_symbolic*1000:.3f} ms")
     print(f"    Points inside: {sum(results_symbolic)}/{len(test_points)}")
     
-    # ========================================================================
-    # Approach 2: Callable Only (Maximum Performance)
-    # ========================================================================
+    ### Approach 2: Callable Only (Maximum Performance) ###
+    
     print("\n[2] CALLABLE ONLY: Maximum performance")
     print("=" * 70)
     
@@ -90,9 +88,8 @@ def main():
     print(f"    Test time: {test_time_callable*1000:.3f} ms")
     print(f"    Points inside: {sum(results_callable)}/{len(test_points)}")
     
-    # ========================================================================
-    # Approach 3: Both (Best of Both Worlds)
-    # ========================================================================
+    ### Approach 3: Both (Best of Both Worlds) ###
+    
     print("\n[3] BOTH: Symbolic + Pre-optimized Constraint")
     print("=" * 70)
     
@@ -118,9 +115,8 @@ def main():
     print(f"    Test time: {test_time_both*1000:.3f} ms")
     print(f"    Points inside: {sum(results_both)}/{len(test_points)}")
     
-    # ========================================================================
-    # Performance Comparison
-    # ========================================================================
+    ### Performance Comparison ###
+    
     print("\n[4] PERFORMANCE COMPARISON")
     print("=" * 70)
     print(f"\nCreation time:")
@@ -137,9 +133,8 @@ def main():
     speedup = test_time_symbolic / test_time_callable if test_time_callable > 0 else float('inf')
     print(f"\n  Speedup (symbolic → callable): {speedup:.2f}x")
     
-    # ========================================================================
-    # Practical Application: System with Performance-Critical Validation
-    # ========================================================================
+    ### Practical Application: System with Performance-Critical Validation ###
+    
     print("\n[5] PRACTICAL APPLICATION")
     print("=" * 70)
     
@@ -164,9 +159,8 @@ def main():
     print(f"    Total time: {total_time*1000:.3f} ms")
     print(f"    (Includes initial state validation with fast constraint)")
     
-    # ========================================================================
-    # Recommendations
-    # ========================================================================
+    ### Recommendations ###
+    
     print("\n[6] RECOMMENDATIONS")
     print("=" * 70)
     print("""
@@ -191,13 +185,6 @@ def main():
   Note: Built-in factories (euclidean(), box()) automatically provide
         both representations for optimal performance!
     """)
-    
-    print("\n" + "=" * 70)
-    print("Key Takeaway: Choose your phase space representation based on needs!")
-    print("  - Symbolic: Flexibility and mathematical operations")
-    print("  - Callable: Maximum performance")
-    print("  - Both: Best of both worlds (recommended)")
-    print("=" * 70)
 
 
 if __name__ == "__main__":

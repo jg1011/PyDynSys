@@ -2,8 +2,8 @@
 Example 5: Phase Space Constraints
 
 Demonstrates:
-- Defining phase spaces with constraints (not just ℝⁿ)
-- Box constraints: X = [a₁, b₁] × [a₂, b₂]
+- Defining phase spaces with constraints (not just R^n)
+- Box constraints: X = [a_1, b_1] × [a_2, b_2] × ... × [a_n, b_n]
 - State validation against phase space
 - What happens when trajectories try to leave X
 """
@@ -15,10 +15,11 @@ from PyDynSys.core import AutonomousEuclideanDS, PhaseSpace
 
 def main():
     print("=" * 70)
-    print("Example 5: Phase Space Constraints")
+    print("Example: Phase Space Constraints")
     print("=" * 70)
     
-    # Example 5a: Box-constrained phase space
+    ### Example A: Box-constrained phase space ###
+    
     print("\n[5a] BOX-CONSTRAINED PHASE SPACE")
     print("=" * 70)
     
@@ -28,11 +29,11 @@ def main():
         x, y = state
         return np.array([y, -x])
     
-    # Create box-constrained phase space: X = [-2, 2] × [-2, 2]
+    # Create box-constrained phase space: X = [-2, 2] x [-2, 2]
     bounds = np.array([[-2.0, 2.0], [-2.0, 2.0]])
     phase_space_box = PhaseSpace.box(bounds)
     
-    print(f"\nPhase space: X = [−2, 2] × [−2, 2]")
+    print(f"\nPhase space: X = [-2, 2] x [-2, 2]")
     print(f"  Dimension: {phase_space_box.dimension}")
     print(f"  Symbolic set: {phase_space_box.symbolic_set}")
     
@@ -81,7 +82,8 @@ def main():
         print(f"    ✓ Correctly rejected with error:")
         print(f"      {str(e)}")
     
-    # Example 5b: Custom phase space (unit disk)
+    ### Example b: Custom phase space (unit disk) ### 
+    
     print("\n" + "=" * 70)
     print("[5b] CUSTOM PHASE SPACE: Unit Disk")
     print("=" * 70)
@@ -193,15 +195,6 @@ def main():
     plt.tight_layout()
     plt.savefig('examples/outputs/05_phase_space_constraints.png', dpi=150, bbox_inches='tight')
     print("    ✓ Plot saved to examples/outputs/05_phase_space_constraints.png")
-    
-    print("\n" + "=" * 70)
-    print("Key Takeaways:")
-    print("  1. Phase spaces can have constraints beyond ℝⁿ")
-    print("  2. Box constraints use numpy for fast validation")
-    print("  3. Custom constraints use sympy (slower but general)")
-    print("  4. Invalid initial conditions are rejected at validation")
-    print("  5. Future: trajectory exit detection when leaving phase space")
-    print("=" * 70)
 
 
 if __name__ == "__main__":

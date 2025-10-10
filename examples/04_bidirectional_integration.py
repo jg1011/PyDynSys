@@ -49,9 +49,9 @@ def main():
     x0 = np.array([1.0, 0.5])
     t0 = 0.0
     
-    # Key: t_eval spans around t₀!
+    # Key: t_eval spans around t_0!
     t_eval = np.linspace(-T, T, 1000)
-    t_span = (t0, T)  # First element is t₀, second is just a bound
+    t_span = (t0, T)  # First element is t_0, second is just a bound
     
     print(f"\n[2] Setting up bidirectional integration...")
     print(f"    Initial time: t₀ = {t0}")
@@ -62,6 +62,7 @@ def main():
     print(f"    → Automatically performs bidirectional integration!")
     
     # Compute solution - library automatically handles bidirectional case
+    ## Note scipy::solve_ivp does not support bidirectional integration, so this is something
     solution = system.trajectory(x0, t_span, t_eval, method='RK45')
     
     print(f"\n[3] Integration results:")
@@ -161,14 +162,6 @@ def main():
     
     plt.savefig('examples/outputs/04_bidirectional_integration.png', dpi=150, bbox_inches='tight')
     print("    ✓ Plot saved to examples/outputs/04_bidirectional_integration.png")
-    
-    print("\n" + "=" * 70)
-    print("Key Takeaways:")
-    print("  1. Bidirectional integration is AUTOMATIC when t₀ is interior to t_eval")
-    print("  2. Useful for studying complete orbits around a point in time")
-    print("  3. Library handles backward + forward integration seamlessly")
-    print("  4. Dense output not supported for bidirectional (returns None)")
-    print("=" * 70)
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ def main():
             time: Current time t (ESSENTIAL for non-autonomous systems)
             
         Returns:
-            [dx/dt, dy/dt] = [y, -x + sin(ωt)]
+            [dx/dt, dy/dt] = [y, -x + sin(omega * t)]
         """
         x, y = state
         return np.array([y, -x + np.sin(omega * time)])
@@ -123,11 +123,6 @@ def main():
     print(f"    From t₀=0.0:  x(0.1) = [{x_at_t0[0]:.6f}, {x_at_t0[1]:.6f}]")
     print(f"    From t₀=10.0: x(10.1) = [{x_at_t10[0]:.6f}, {x_at_t10[1]:.6f}]")
     print(f"    → Different evolution due to time-dependent forcing!")
-    
-    print("\n" + "=" * 70)
-    print("Key Takeaway: For non-autonomous systems, the initial TIME matters!")
-    print("The same initial state evolves differently depending on when you start.")
-    print("=" * 70)
 
 
 if __name__ == "__main__":
