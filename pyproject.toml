@@ -35,10 +35,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/username/repo"
-Repository = "https://github.com/username/repo"
-Issues = "https://github.com/username/repo/issues"
-Changelog = "https://github.com/username/repo/releases"
+Homepage = "https://github.com/jg1011/PyDynSys"
+Repository = "https://github.com/jg1011/PyDynSys"
+Issues = "https://github.com/jg1011/PyDynSys/issues"
+Changelog = "https://github.com/jg1011/PyDynSys/releases"
 
 [project.optional-dependencies]
 full = [
