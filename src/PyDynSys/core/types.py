@@ -186,10 +186,16 @@ class PhaseSpace:
                 return box_constraint
         
         # General case: use sympy (slow)
-        state_symbols = sp.symbols(f'x0:{self.dimension}', real=True)
+        # Prefer set.contains(Tuple(...)) over geometric Point for generic sets
         def symbolic_constraint(x: NDArray[np.float64]) -> bool:
-            point = sp.Point(*x)
-            return point in self.symbolic_set
+            try:
+                values = [sp.Float(float(v)) for v in x]
+                elem = sp.Tuple(*values)
+                contains_expr = self.symbolic_set.contains(elem)
+                # SymPy returns a Boolean or a symbolic expression; coerce if possible
+                return bool(contains_expr)
+            except Exception:
+                return False
         
         return symbolic_constraint
     
