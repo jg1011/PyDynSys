@@ -116,11 +116,12 @@ def main():
     
     # Solve
     x0_driven = np.array([1.0, 0.0])
+    t0_driven = 0.0
     t_span_driven = (0.0, 50.0)
     t_eval_driven = np.linspace(0.0, 50.0, 2000)
     
     print(f"\nSolving with x(0) = {x0_driven}...")
-    solution_driven = system_driven.trajectory(x0_driven, t_span_driven, t_eval_driven)
+    solution_driven = system_driven.trajectory(x0_driven, t0_driven, t_span_driven, t_eval_driven)
     print(f"    ✓ Solution computed successfully")
     
     # Plot both systems

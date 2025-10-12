@@ -68,7 +68,7 @@ def main():
         t_eval = t_eval_relative + t0
         
         print(f"\n    Starting at t₀ = {t0}:")
-        sol = system.trajectory(x0, t_span, t_eval, method='RK45')
+        sol = system.trajectory(x0, t0, t_span, t_eval, method='RK45')
         solutions.append((t0, sol))
         print(f"        ✓ Integration successful")
         print(f"        ✓ Final state: x({t0 + t_duration}) = [{sol.y[0, -1]:.4f}, {sol.y[1, -1]:.4f}]")

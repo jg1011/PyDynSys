@@ -1,7 +1,26 @@
-"""Core module for PyFlow dynamical systems library."""
+"""
+PyDynSys: Python Dynamical Systems Library
 
-# Type exports
-from .types import (
+A library for working with dynamical systems in Euclidean space, providing:
+- Autonomous and non-autonomous system support
+- Symbolic to numerical system conversion
+- Trajectory computation and composition
+- Phase space constraints and time horizons
+"""
+
+__version__ = "0.1.0"
+
+# Re-export core functionality for convenience
+from .core import (
+    # Dynamical system classes
+    EuclideanDS,
+    AutonomousEuclideanDS,
+    NonAutonomousEuclideanDS,
+    EuclideanTrajectorySegment,
+    EuclideanTrajectory,
+    # System builder
+    SymbolicSystemBuilder,
+    SymbolicToVectorFieldResult,
     # Vector field types
     AutonomousVectorField,
     NonAutonomousVectorField,
@@ -11,37 +30,22 @@ from .types import (
     SystemParameters,
     # Solution types
     TrajectoryCacheKey,
-    SciPyIvpSolution,
     TrajectorySegmentMergePolicy,
+    # Phase space types
+    PhaseSpace,
+    TimeHorizon,
 )
-
-# System builder
-from .sym_utils import SymbolicSystemBuilder, SymbolicToVectorFieldResult
-
-# Dynamical systems and phase space/time types
-from .euclidean_sys import (
-    EuclideanDS,
-    AutonomousEuclideanDS,
-    NonAutonomousEuclideanDS,
-    EuclideanTrajectorySegment,
-    EuclideanTrajectory,
-)
-from .euclidean_sys.phase_space import EuclideanPhaseSpace
-from .euclidean_sys.time_horizon import RealLineTimeHorizon
-
-# Create convenient aliases
-PhaseSpace = EuclideanPhaseSpace
-TimeHorizon = RealLineTimeHorizon
 
 __all__ = [
     # Dynamical system classes
     'EuclideanDS',
-    'AutonomousEuclideanDS', 
+    'AutonomousEuclideanDS',
     'NonAutonomousEuclideanDS',
     'EuclideanTrajectorySegment',
     'EuclideanTrajectory',
     # System builder
     'SymbolicSystemBuilder',
+    'SymbolicToVectorFieldResult',
     # Vector field types
     'AutonomousVectorField',
     'NonAutonomousVectorField',
@@ -55,6 +59,5 @@ __all__ = [
     # Phase space types
     'PhaseSpace',
     'TimeHorizon',
-    # Result types
-    'SymbolicToVectorFieldResult',
 ]
+

@@ -8,20 +8,19 @@ Hierarchy:
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Any
 import numpy as np
 from numpy.typing import NDArray
-from scipy.integrate import solve_ivp
-import sympy as sp
+import sympy as syp
 
 from ..types import (
-    IvpParams, 
+    TrajectoryCacheKey, 
     SciPyIvpSolution, 
     SystemParameters,
     SymbolicODE,
-    PhaseSpace,
-    TimeHorizon,
 )
+from .phase_space import EuclideanPhaseSpace as PhaseSpace
+from .time_horizon import RealLineTimeHorizon as TimeHorizon
 
 
 class EuclideanDS(ABC):
@@ -47,8 +46,9 @@ class EuclideanDS(ABC):
         Initialize Euclidean dynamical system.
         
         Args:
-            dimension (int): Phase space dimension n (must be positive)
-            phase_space (PhaseSpace): Phase space X ⊆ ℝⁿ
+            dimension (int): Phase space dimension n (must be positive integer)
+                -> Not a dimension in the linear subspace sense of the term, just #state_components                
+            phase_space (PhaseSpace): Phase space X subset of R^n
             
         Raises:
             ValueError: If dimension ≤ 0 or phase_space dimension mismatch
@@ -67,7 +67,8 @@ class EuclideanDS(ABC):
         
         self.dimension = dimension
         self.phase_space = phase_space
-        self._solutions_cache: Dict[IvpParams, SciPyIvpSolution] = {}
+        # Cache now stores EuclideanTrajectory objects, will be updated in subclasses
+        self._solutions_cache: Dict[TrajectoryCacheKey, Any] = {}
     
     
     # ========================================================================
@@ -78,7 +79,7 @@ class EuclideanDS(ABC):
     def from_symbolic(
         cls,
         equations: SymbolicODE,
-        variables: List[sp.Function],
+        variables: List[syp.Function],
         parameters: SystemParameters = None,
         phase_space: PhaseSpace = None,
         time_horizon: TimeHorizon = None
@@ -103,11 +104,11 @@ class EuclideanDS(ABC):
             ValueError: If system is not first-order
             
         Example:
-            >>> t = sp.symbols('t')
-            >>> x, y = sp.symbols('x y', cls=sp.Function)
+            >>> t = syp.symbols('t')
+            >>> x, y = syp.symbols('x y', cls=syp.Function)
             >>> x, y = x(t), y(t)
             >>> # Autonomous system
-            >>> eqs = [sp.diff(x, t) - y, sp.diff(y, t) + x]
+            >>> eqs = [syp.diff(x, t) - y, syp.diff(y, t) + x]
             >>> sys = EuclideanDS.from_symbolic(eqs, [x, y])
             >>> type(sys).__name__
             'AutonomousEuclideanDS'
