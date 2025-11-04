@@ -1,6 +1,12 @@
 # Legacy chaos_utils library for personal reference
 /LEGACY_LIB/
 
+# Legacy examples for personal reference
+/legacy_examples/
+
+# Legacy tests for personal reference
+/legacy_tests/
+
 ### Github Python .gitignore template ### 
 
 # Byte-compiled / optimized / DLL files

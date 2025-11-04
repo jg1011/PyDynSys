@@ -282,7 +282,7 @@ class SymbolicSystemBuilder:
             dimension: Phase space dimension n
             
         Returns:
-            Autonomous vector field function F: ℝⁿ → ℝⁿ
+            Autonomous vector field function F: R^n → R^n
         """
         # Lambdify each derivative component
         vector_field_funcs = [
@@ -294,10 +294,10 @@ class SymbolicSystemBuilder:
             Numerical autonomous vector field function.
             
             Args:
-                state: Current state vector [x1, x2, ..., xn]
+                state: Current state vector [x_1, x_2, ..., x_n]
                 
             Returns:
-                Derivative vector [dx1/dt, dx2/dt, ..., dxn/dt]
+                Derivative vector [dx_1/dt, dx_2/dt, ..., dx_n/dt]
             """
             args = tuple(state)
             
@@ -329,7 +329,7 @@ class SymbolicSystemBuilder:
             dimension: Phase space dimension n
             
         Returns:
-            Non-autonomous vector field function F: ℝⁿ × ℝ → ℝⁿ
+            Non-autonomous vector field function F: R^n x R → R^n
         """
         # Build lambda signature: (x_1, ..., x_n, t)
         if dimension == 1:

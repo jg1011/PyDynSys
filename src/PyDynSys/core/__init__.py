@@ -1,6 +1,6 @@
 """Core module for PyFlow dynamical systems library."""
 
-# Type exports
+# Type exports from utility modules (direct imports)
 from .types import (
     # Vector field types
     AutonomousVectorField,
@@ -15,31 +15,13 @@ from .types import (
     TrajectorySegmentMergePolicy,
 )
 
-# System builder
+# System builder from utility module
 from .sym_utils import SymbolicSystemBuilder, SymbolicToVectorFieldResult
 
-# Dynamical systems and phase space/time types
-from .euclidean_sys import (
-    EuclideanDS,
-    AutonomousEuclideanDS,
-    NonAutonomousEuclideanDS,
-    EuclideanTrajectorySegment,
-    EuclideanTrajectory,
-)
-from .euclidean_sys.phase_space import EuclideanPhaseSpace
-from .euclidean_sys.time_horizon import RealLineTimeHorizon
-
-# Create convenient aliases
-PhaseSpace = EuclideanPhaseSpace
-TimeHorizon = RealLineTimeHorizon
+# Expose euclidean as a submodule
+from . import euclidean
 
 __all__ = [
-    # Dynamical system classes
-    'EuclideanDS',
-    'AutonomousEuclideanDS', 
-    'NonAutonomousEuclideanDS',
-    'EuclideanTrajectorySegment',
-    'EuclideanTrajectory',
     # System builder
     'SymbolicSystemBuilder',
     # Vector field types
@@ -52,9 +34,8 @@ __all__ = [
     # Solution types
     'TrajectoryCacheKey',
     'TrajectorySegmentMergePolicy',
-    # Phase space types
-    'PhaseSpace',
-    'TimeHorizon',
     # Result types
     'SymbolicToVectorFieldResult',
+    # Submodules
+    'euclidean',
 ]

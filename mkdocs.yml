@@ -1,0 +1,45 @@
+site_name: PyDynSys
+repo_url: https://github.com/jg1011/PyDynSys
+
+theme:
+  name: material
+  features: [navigation.tabs, navigation.sections, search.highlight]
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+  - mkdocs-jupyter
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_css:
+  - https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js
+  - https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js
+  - javascript/katex-config.js
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting_started/installation.md
+  - API Reference:
+    - Core:
+      - Overview: api/core.md
+      - Euclidean:
+        - Overview: api/core/euclidean.md
+        - PhaseSpace: api/core/euclidean/phase_space.md
+        - TimeHorizon: api/core/euclidean/time_horizon.md
+    - Vis:
+      - Overview: api/vis.md
+      - Euclidean:
+        - Overview: api/vis/euclidean.md
+        - PhaseSpace: api/vis/euclidean/phase_space.md
+  - Examples:
+    - PhaseSpaces & Time Horizons: examples/phase_spaces_and_time_horizons.ipynb
