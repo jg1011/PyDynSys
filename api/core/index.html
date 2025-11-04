@@ -1,0 +1,3222 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://jg1011.github.io/PyDynSys/api/core/">
+      
+      
+        <link rel="prev" href="../../getting_started/installation/">
+      
+      
+        <link rel="next" href="euclidean/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Overview - PyDynSys</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pydynsyscore-module" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="PyDynSys" class="md-header__button md-logo" aria-label="PyDynSys" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PyDynSys
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jg1011/PyDynSys" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting_started/installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/phase_spaces_and_time_horizons/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PyDynSys" class="md-nav__button md-logo" aria-label="PyDynSys" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PyDynSys
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jg1011/PyDynSys" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Core
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Core
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#submodules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Submodules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main-classes-and-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Main Classes and Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Main Classes and Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamical-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamical Systems
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trajectory-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trajectory Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-space-and-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase Space and Time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Builder
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Definitions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Docs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#PyDynSys.core" class="md-nav__link">
+    <span class="md-ellipsis">
+      core
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="core">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.AutonomousVectorField" class="md-nav__link">
+    <span class="md-ellipsis">
+      AutonomousVectorField
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.NonAutonomousVectorField" class="md-nav__link">
+    <span class="md-ellipsis">
+      NonAutonomousVectorField
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicODE" class="md-nav__link">
+    <span class="md-ellipsis">
+      SymbolicODE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SystemParameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      SystemParameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      TrajectorySegmentMergePolicy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TrajectorySegmentMergePolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy--when-overlaps-occur" class="md-nav__link">
+    <span class="md-ellipsis">
+      WHEN OVERLAPS OCCUR:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy--merge-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      MERGE POLICIES:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy--tangent-domains-special-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      TANGENT DOMAINS (Special Case):
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.VectorField" class="md-nav__link">
+    <span class="md-ellipsis">
+      VectorField
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicSystemBuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      SymbolicSystemBuilder
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SymbolicSystemBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicSystemBuilder.build_vector_field" class="md-nav__link">
+    <span class="md-ellipsis">
+      build_vector_field
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicToVectorFieldResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      SymbolicToVectorFieldResult
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectoryCacheKey" class="md-nav__link">
+    <span class="md-ellipsis">
+      TrajectoryCacheKey
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TrajectoryCacheKey">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectoryCacheKey--design-rationale-why-this-key-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      DESIGN RATIONALE - Why This Key Structure:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1_2" id="__nav_3_1_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Euclidean
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Euclidean
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="euclidean/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="euclidean/phase_space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PhaseSpace
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="euclidean/time_horizon/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TimeHorizon
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="euclidean/trajectory_segment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TrajectorySegment
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="euclidean/trajectory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trajectory
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Vis
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Vis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Euclidean
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Euclidean
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vis/euclidean/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vis/euclidean/phase_space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    PhaseSpace
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/phase_spaces_and_time_horizons/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Using Custom Phase Spaces and Time Horizons
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#submodules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Submodules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main-classes-and-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Main Classes and Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Main Classes and Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamical-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamical Systems
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trajectory-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trajectory Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-space-and-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase Space and Time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-builder" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Builder
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Definitions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Full Docs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#PyDynSys.core" class="md-nav__link">
+    <span class="md-ellipsis">
+      core
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="core">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.AutonomousVectorField" class="md-nav__link">
+    <span class="md-ellipsis">
+      AutonomousVectorField
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.NonAutonomousVectorField" class="md-nav__link">
+    <span class="md-ellipsis">
+      NonAutonomousVectorField
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicODE" class="md-nav__link">
+    <span class="md-ellipsis">
+      SymbolicODE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SystemParameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      SystemParameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      TrajectorySegmentMergePolicy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TrajectorySegmentMergePolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy--when-overlaps-occur" class="md-nav__link">
+    <span class="md-ellipsis">
+      WHEN OVERLAPS OCCUR:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy--merge-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      MERGE POLICIES:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectorySegmentMergePolicy--tangent-domains-special-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      TANGENT DOMAINS (Special Case):
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.VectorField" class="md-nav__link">
+    <span class="md-ellipsis">
+      VectorField
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicSystemBuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      SymbolicSystemBuilder
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SymbolicSystemBuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicSystemBuilder.build_vector_field" class="md-nav__link">
+    <span class="md-ellipsis">
+      build_vector_field
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.SymbolicToVectorFieldResult" class="md-nav__link">
+    <span class="md-ellipsis">
+      SymbolicToVectorFieldResult
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectoryCacheKey" class="md-nav__link">
+    <span class="md-ellipsis">
+      TrajectoryCacheKey
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TrajectoryCacheKey">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PyDynSys.core.TrajectoryCacheKey--design-rationale-why-this-key-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      DESIGN RATIONALE - Why This Key Structure:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="pydynsyscore-module">PyDynSys.core Module</h1>
+<p>The <code>PyDynSys.core</code> module provides the foundational classes and utilities for working with Euclidean dynamical systems.</p>
+<h2 id="submodules">Submodules</h2>
+<ul>
+<li><strong><a href="euclidean/">Core.Euclidean Module</a></strong> - Euclidean dynamical systems and related types</li>
+</ul>
+<h2 id="main-classes-and-types">Main Classes and Types</h2>
+<h3 id="dynamical-systems">Dynamical Systems</h3>
+<ul>
+<li><strong><a href="euclidean/#euclideands">EuclideanDS</a></strong> - Abstract base class for Euclidean dynamical systems</li>
+<li><strong><a href="euclidean/#autonomouseuclideands">AutonomousEuclideanDS</a></strong> - Systems where dx/dt = F(x)</li>
+<li><strong><a href="euclidean/#nonautonomouseuclideands">NonAutonomousEuclideanDS</a></strong> - Systems where dx/dt = F(x, t)</li>
+</ul>
+<h3 id="trajectory-types">Trajectory Types</h3>
+<ul>
+<li><strong><a href="euclidean/#euclideantrajectorysegment">EuclideanTrajectorySegment</a></strong> - Single trajectory segment</li>
+<li><strong><a href="euclidean/#euclideantrajectory">EuclideanTrajectory</a></strong> - Composed trajectory over multiple segments</li>
+</ul>
+<h3 id="phase-space-and-time">Phase Space and Time</h3>
+<ul>
+<li><strong><a href="euclidean/phase_space/">PhaseSpace</a></strong> - Phase space representation with symbolic and callable constraints</li>
+<li><strong><a href="euclidean/#timehorizon">TimeHorizon</a></strong> - Time domain representation</li>
+</ul>
+<h3 id="system-builder">System Builder</h3>
+<ul>
+<li><strong><a href="euclidean/#symbolicsystembuilder">SymbolicSystemBuilder</a></strong> - Build systems from symbolic ODEs</li>
+</ul>
+<h3 id="type-definitions">Type Definitions</h3>
+<ul>
+<li><code>AutonomousVectorField</code> - Vector field type for autonomous systems</li>
+<li><code>NonAutonomousVectorField</code> - Vector field type for non-autonomous systems</li>
+<li><code>VectorField</code> - Union type for any vector field</li>
+<li><code>SymbolicODE</code> - Symbolic ODE representation</li>
+<li><code>SystemParameters</code> - Parameter substitution dictionary</li>
+<li><code>TrajectoryCacheKey</code> - Cache key for trajectory solutions</li>
+<li><code>SciPyIvpSolution</code> - SciPy IVP solution wrapper</li>
+<li><code>TrajectorySegmentMergePolicy</code> - Policy for merging trajectory segments</li>
+</ul>
+<h2 id="full-docs">Full Docs</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="PyDynSys.core" class="doc doc-heading">
+            <code>PyDynSys.core</code>
+
+
+</h2>
+
+    <div class="doc doc-contents first">
+
+        <p>Core module for PyFlow dynamical systems library.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="PyDynSys.core.AutonomousVectorField" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">AutonomousVectorField</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]],</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]]</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Vector field for autonomous systems: F: R^n → R^n
+Maps state vector x to derivative dx/dt = F(x)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="PyDynSys.core.NonAutonomousVectorField" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">NonAutonomousVectorField</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]]</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Vector field for non-autonomous systems: F: R^n × R → R^n
+Maps (state x, time t) to derivative dx/dt = F(x, t)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="PyDynSys.core.SymbolicODE" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">SymbolicODE</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">],</span> <span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Union type for symbolic ODE representations.
+Accepts: single expression, list of expressions, or string forms.
+Expected format: d(x_i)/dt - F_i(x, t) = 0 (we drop the "= 0")</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="PyDynSys.core.SystemParameters" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">SystemParameters</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Parameter substitution dictionary for symbolic systems.
+Keys: parameter names (str) or SymPy symbols
+Values: numerical parameter values
+NOTE: All keys in a single dict must be same type (all str or all Symbol)</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="PyDynSys.core.TrajectorySegmentMergePolicy" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">TrajectorySegmentMergePolicy</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;average&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;stitch&#39;</span><span class="p">]</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Strategy for merging overlapping trajectory segments in EuclideanTrajectory.from_segments().</p>
+<h5 id="PyDynSys.core.TrajectorySegmentMergePolicy--when-overlaps-occur">WHEN OVERLAPS OCCUR:</h5>
+<p>Overlapping domains arise when the same physical trajectory is computed multiple
+times over intersecting time intervals. Common scenarios:
+  1. Re-solving for comparison: Solve [0,1.5] with RK45, then [0.5,2] with DOP853
+  2. Patching numerical errors: Re-solve unstable region with tighter tolerances
+  3. Composing from cache: Merging cached trajectories to avoid recomputation</p>
+<h5 id="PyDynSys.core.TrajectorySegmentMergePolicy--merge-policies">MERGE POLICIES:</h5>
+<p>When two segments overlap on [a, b], we must decide:
+  - Which y values to use at shared evaluation points?
+  - Which interpolant to use for continuous evaluation in [a, b]?</p>
+<p>Available policies:
+- 'average' (DEFAULT): Average y values at shared evaluation points in overlap region.
+                       Takes midpoint between competing numerical approximations.
+                       Interpolant set to None (limitation of current implementation).
+                       Use case: Equal trust in both segments, want best estimate.</p>
+<ul>
+<li>
+<p>'left': Prioritize left segment's values and interpolant in overlap region.
+          Use case: Left segment has higher accuracy (tighter tolerance, better method).
+          Status: Not yet implemented (raises NotImplementedError).</p>
+</li>
+<li>
+<p>'right': Prioritize right segment's values and interpolant in overlap region.
+           Use case: Right segment has higher accuracy or is more recent computation.
+           Status: Not yet implemented (raises NotImplementedError).</p>
+</li>
+<li>
+<p>'stitch': Use left segment's interpolant until overlap midpoint, then right's.
+            Creates continuous transition across overlap region.
+            Use case: Both segments equally valid, want smooth transition.
+            Status: Not yet implemented (raises NotImplementedError).</p>
+</li>
+</ul>
+<h5 id="PyDynSys.core.TrajectorySegmentMergePolicy--tangent-domains-special-case">TANGENT DOMAINS (Special Case):</h5>
+<p>When domains touch at exactly one point (e.g., [0,1] + [1,2]), the "overlap"
+is just the boundary. The average policy automatically handles this by averaging
+the single shared point, which is correct for tangent segments from bidirectional
+integration where both segments share x(t_0) at the tangent point.</p>
+<p>Note: Only 'average' is implemented in current version. Others raise NotImplementedError.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="PyDynSys.core.VectorField" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">VectorField</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">AutonomousVectorField</span><span class="p">,</span> <span class="n">NonAutonomousVectorField</span><span class="p">]</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Union type for any vector field representation.
+NOTE: For type safety, prefer specific types in implementations.</p>
+
+    </div>
+
+</div>
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="PyDynSys.core.SymbolicSystemBuilder" class="doc doc-heading">
+            <code>SymbolicSystemBuilder</code>
+
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Converts symbolic ODE representations to numerical vector fields.</p>
+<p>Handles:
+- Parsing various symbolic input formats (str, syp.Expr, lists)
+- Parameter substitution
+- First-order system validation
+- Autonomous vs non-autonomous detection
+- Compilation to efficient numerical functions via syp.lambdify</p>
+
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/PyDynSys/core/sym_utils.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SymbolicSystemBuilder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts symbolic ODE representations to numerical vector fields.</span>
+
+<span class="sd">    Handles:</span>
+<span class="sd">    - Parsing various symbolic input formats (str, syp.Expr, lists)</span>
+<span class="sd">    - Parameter substitution</span>
+<span class="sd">    - First-order system validation</span>
+<span class="sd">    - Autonomous vs non-autonomous detection</span>
+<span class="sd">    - Compilation to efficient numerical functions via syp.lambdify</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_vector_field</span><span class="p">(</span>
+        <span class="n">equations</span><span class="p">:</span> <span class="n">SymbolicODE</span><span class="p">,</span>
+        <span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Function</span><span class="p">],</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="n">SystemParameters</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SymbolicToVectorFieldResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert symbolic ODE system to numerical vector field.</span>
+
+<span class="sd">        Auto-detects whether system is autonomous by checking if time `t` </span>
+<span class="sd">        appears in any derivative after solving for dx/dt.</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            equations (SymbolicODE): Symbolic system expressed as d(x_i)/dt - F_i(x, t), i=1,...,n</span>
+<span class="sd">                -&gt; SymbolicODE = Union[List[syp.Expr], syp.Expr, str, List[str]]</span>
+<span class="sd">                -&gt; str use is highly experimental and not recommended. </span>
+<span class="sd">            variables (List[syp.Function]): List of dependent variables as SymPy Function objects</span>
+<span class="sd">                -&gt; support for strings may be supported later, but not a pressing matter.</span>
+<span class="sd">            parameters (SystemParameters): Optional parameter substitution dict </span>
+<span class="sd">                -&gt; SystemParameters = Union[Dict[str, float], Dict[syp.Symbol, float]]</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SymbolicToVectorFieldResult wrapper, which itself contains:</span>
+<span class="sd">                - vector_field: Callable with appropriate signature</span>
+<span class="sd">                - dimension: Phase space dimension n</span>
+<span class="sd">                - is_autonomous: True &lt;==&gt;  partial(vector_field, t) = 0</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If system is not first-order </span>
+
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; t = syp.symbols(&#39;t&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; x, y = syp.symbols(&#39;x y&#39;, cls=syp.Function)</span>
+<span class="sd">            &gt;&gt;&gt; x, y = x(t), y(t)</span>
+<span class="sd">            &gt;&gt;&gt; eqs = [syp.diff(x, t) - y, syp.diff(y, t) + x]</span>
+<span class="sd">            &gt;&gt;&gt; result = SymbolicSystemBuilder.build_vector_field(eqs, [x, y])</span>
+<span class="sd">            &gt;&gt;&gt; result.is_autonomous  # True (no explicit t dependence)</span>
+<span class="sd">            True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parse symbolic input</span>
+        <span class="n">parsed_equations</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_parse_symbolic_input</span><span class="p">(</span><span class="n">equations</span><span class="p">)</span>
+
+        <span class="c1"># Validate first-order system</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_is_first_order_system</span><span class="p">(</span><span class="n">parsed_equations</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Only first-order systems are currently supported. &quot;</span>
+                <span class="s2">&quot;nth-order systems will be supported in future versions.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Get dimension</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="c1"># Solve for derivatives: d(x_i)/dt = F_i(x, t)</span>
+        <span class="n">t_sym</span> <span class="o">=</span> <span class="n">syp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>
+        <span class="n">derivatives</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">equation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parsed_equations</span><span class="p">):</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="n">syp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="n">syp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">t_sym</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">derivatives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">derivative</span><span class="p">)</span>
+
+        <span class="c1"># Normalise parameters and substitute</span>
+        <span class="n">normalised_parameters</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_normalise_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+        <span class="c1"># Convert Function objects to symbols for substitution</span>
+        <span class="n">state_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">]</span>
+        <span class="n">state_symbols</span> <span class="o">=</span> <span class="n">syp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">state_names</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">state_symbols</span> <span class="o">=</span> <span class="p">(</span><span class="n">state_symbols</span><span class="p">,)</span>  <span class="c1"># Ensure tuple</span>
+
+        <span class="c1"># Build function → symbol mapping</span>
+        <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">function_to_symbol_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">state_symbols</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">function_to_symbol_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">var</span><span class="p">:</span> <span class="n">state_symbols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variables</span><span class="p">)}</span>
+
+        <span class="c1"># Apply all substitutions</span>
+        <span class="n">all_substitutions</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">function_to_symbol_map</span><span class="p">,</span> <span class="o">**</span><span class="n">normalised_parameters</span><span class="p">}</span>
+        <span class="n">derivatives_substituted</span> <span class="o">=</span> <span class="p">[</span><span class="n">der</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">all_substitutions</span><span class="p">)</span> <span class="k">for</span> <span class="n">der</span> <span class="ow">in</span> <span class="n">derivatives</span><span class="p">]</span>
+
+        <span class="c1"># Detect autonomy</span>
+        <span class="n">is_autonomous</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_detect_autonomy</span><span class="p">(</span><span class="n">derivatives_substituted</span><span class="p">,</span> <span class="n">t_sym</span><span class="p">)</span>
+
+        <span class="c1"># Build appropriate vector field</span>
+        <span class="k">if</span> <span class="n">is_autonomous</span><span class="p">:</span>
+            <span class="n">vector_field</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_build_autonomous_field</span><span class="p">(</span>
+                <span class="n">derivatives_substituted</span><span class="p">,</span> <span class="n">state_symbols</span><span class="p">,</span> <span class="n">dimension</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vector_field</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_build_nonautonomous_field</span><span class="p">(</span>
+                <span class="n">derivatives_substituted</span><span class="p">,</span> <span class="n">state_symbols</span><span class="p">,</span> <span class="n">t_sym</span><span class="p">,</span> <span class="n">dimension</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">SymbolicToVectorFieldResult</span><span class="p">(</span>
+            <span class="n">vector_field</span><span class="o">=</span><span class="n">vector_field</span><span class="p">,</span>
+            <span class="n">dimension</span><span class="o">=</span><span class="n">dimension</span><span class="p">,</span>
+            <span class="n">is_autonomous</span><span class="o">=</span><span class="n">is_autonomous</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_symbolic_input</span><span class="p">(</span><span class="n">symbolic_system</span><span class="p">:</span> <span class="n">SymbolicODE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse various symbolic input formats into list of expressions.</span>
+
+<span class="sd">        Accepts:</span>
+<span class="sd">        - Single string: &quot;d(x)/dt - f(x, t)&quot;</span>
+<span class="sd">        - Single expression: syp.Expr object</span>
+<span class="sd">        - List of strings: [&quot;d(x)/dt - f1&quot;, &quot;d(y)/dt - f2&quot;]</span>
+<span class="sd">        - List of expressions: [syp.Expr, syp.Expr, ...]</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of sympy expressions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">symbolic_system</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Parse string representation</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">sympify</span><span class="p">(</span><span class="n">symbolic_system</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">symbolic_system</span><span class="p">,</span> <span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">):</span>
+            <span class="c1"># Single expression</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">symbolic_system</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">symbolic_system</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># List of expressions or strings</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">sympify</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">expr</span> <span class="k">for</span> <span class="n">expr</span> <span class="ow">in</span> <span class="n">symbolic_system</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported symbolic system type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">symbolic_system</span><span class="p">)</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected str, syp.Expr, or list of these.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalise_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">:</span> <span class="n">SystemParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert parameter dict to syp.subs() compatible format.</span>
+
+<span class="sd">        Handles both string keys and Symbol keys, converting to Symbol keys</span>
+<span class="sd">        for consistency with SymPy&#39;s subs() method.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parameters: Dict with str or syp.Symbol keys, float values</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict with syp.Symbol keys, float values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+        <span class="n">first_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first_key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Convert string keys to symbols</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">syp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="n">key</span><span class="p">):</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Already symbols</span>
+            <span class="k">return</span> <span class="n">parameters</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_first_order_system</span><span class="p">(</span>
+        <span class="n">equations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">],</span>
+        <span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Function</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate system is first-order.</span>
+
+<span class="sd">        Checks if any equation contains derivatives of order ≥ 2.</span>
+
+<span class="sd">        NOTE: Implementation checks up to 100th order. Not exhaustive but</span>
+<span class="sd">        catches all practical cases. Higher-order systems are rare and would</span>
+<span class="sd">        likely cause performance issues before reaching order 100.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            equations: List of symbolic expressions</span>
+<span class="sd">            variables: List of dependent variables</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if system is first-order, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t_sym</span> <span class="o">=</span> <span class="n">syp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>
+        <span class="c1"># Check for higher-order derivatives</span>
+        <span class="k">for</span> <span class="n">equation</span> <span class="ow">in</span> <span class="n">equations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">):</span>  <span class="c1"># Check up to 99th order</span>
+                    <span class="k">if</span> <span class="n">equation</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">syp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">t_sym</span><span class="p">,</span> <span class="n">order</span><span class="p">)):</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_detect_autonomy</span><span class="p">(</span>
+        <span class="n">derivatives</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">],</span>
+        <span class="n">t_symbol</span><span class="p">:</span> <span class="n">syp</span><span class="o">.</span><span class="n">Symbol</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect if system is autonomous.</span>
+
+<span class="sd">        After solving for dx_i/dt = F_i(x, t), checks if time symbol `t`</span>
+<span class="sd">        appears in any F_i. If not, system is autonomous (∂F/∂t ≡ 0).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            derivatives: List of solved derivatives [F_1, F_2, ..., F_n]</span>
+<span class="sd">            t_symbol: Time symbol to check for</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if autonomous (no t dependence), False otherwise</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; t = syp.symbols(&#39;t&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; x, y = syp.symbols(&#39;x y&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; derivatives = [y, -x]  # Harmonic oscillator: autonomous</span>
+<span class="sd">            &gt;&gt;&gt; SymbolicSystemBuilder._detect_autonomy(derivatives, t)</span>
+<span class="sd">            True</span>
+<span class="sd">            &gt;&gt;&gt; derivatives = [y, -x + syp.sin(t)]  # Driven: non-autonomous</span>
+<span class="sd">            &gt;&gt;&gt; SymbolicSystemBuilder._detect_autonomy(derivatives, t)</span>
+<span class="sd">            False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">der</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="n">t_symbol</span><span class="p">)</span> <span class="k">for</span> <span class="n">der</span> <span class="ow">in</span> <span class="n">derivatives</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_autonomous_field</span><span class="p">(</span>
+        <span class="n">derivatives</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">],</span>
+        <span class="n">state_symbols</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AutonomousVectorField</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compile autonomous vector field: F(x) -&gt; dx/dt.</span>
+
+<span class="sd">        Uses syp.lambdify with signature (x_1, ..., x_n) -&gt; [F_1, ..., F_n].</span>
+<span class="sd">        Time parameter is excluded from lambdified function signature.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            derivatives: Solved derivatives [F_1, ..., F_n] with no time dependence</span>
+<span class="sd">            state_symbols: State variable symbols (x_1, ..., x_n)</span>
+<span class="sd">            dimension: Phase space dimension n</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Autonomous vector field function F: R^n → R^n</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Lambdify each derivative component</span>
+        <span class="n">vector_field_funcs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">syp</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="n">state_symbols</span><span class="p">,</span> <span class="n">der</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">der</span> <span class="ow">in</span> <span class="n">derivatives</span>
+        <span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">vector_field</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Numerical autonomous vector field function.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                state: Current state vector [x_1, x_2, ..., x_n]</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                Derivative vector [dx_1/dt, dx_2/dt, ..., dx_n/dt]</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+            <span class="n">derivatives_evaluated</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">vector_field_funcs</span>
+            <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">derivatives_evaluated</span>
+
+        <span class="k">return</span> <span class="n">vector_field</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_nonautonomous_field</span><span class="p">(</span>
+        <span class="n">derivatives</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Expr</span><span class="p">],</span>
+        <span class="n">state_symbols</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">t_symbol</span><span class="p">:</span> <span class="n">syp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">,</span>
+        <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NonAutonomousVectorField</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compile non-autonomous vector field: F(x, t) -&gt; dx/dt.</span>
+
+<span class="sd">        Uses syp.lambdify with signature (x_1, ..., x_n, t) -&gt; [F_1, ..., F_n].</span>
+<span class="sd">        Time parameter is included in lambdified function signature.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            derivatives: Solved derivatives [F_1, ..., F_n] possibly depending on t</span>
+<span class="sd">            state_symbols: State variable symbols (x_1, ..., x_n)</span>
+<span class="sd">            t_symbol: Time symbol t</span>
+<span class="sd">            dimension: Phase space dimension n</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Non-autonomous vector field function F: R^n x R → R^n</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Build lambda signature: (x_1, ..., x_n, t)</span>
+        <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">state_vars</span> <span class="o">=</span> <span class="p">(</span><span class="n">state_symbols</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span> <span class="o">+</span> <span class="p">(</span><span class="n">t_symbol</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">state_vars</span> <span class="o">=</span> <span class="n">state_symbols</span> <span class="o">+</span> <span class="p">(</span><span class="n">t_symbol</span><span class="p">,)</span>
+
+        <span class="c1"># Lambdify each derivative component with time</span>
+        <span class="n">vector_field_funcs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">syp</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="n">state_vars</span><span class="p">,</span> <span class="n">der</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">der</span> <span class="ow">in</span> <span class="n">derivatives</span>
+        <span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">vector_field</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">],</span> <span class="n">time</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Numerical non-autonomous vector field function.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                state: Current state vector [x1, x2, ..., xn]</span>
+<span class="sd">                time: Current time t</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                Derivative vector [dx1/dt, dx2/dt, ..., dxn/dt]</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">time</span><span class="p">,)</span>
+
+            <span class="n">derivatives_evaluated</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+                <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">vector_field_funcs</span>
+            <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">derivatives_evaluated</span>
+
+        <span class="k">return</span> <span class="n">vector_field</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="PyDynSys.core.SymbolicSystemBuilder.build_vector_field" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">build_vector_field</span><span class="p">(</span><span class="n">equations</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert symbolic ODE system to numerical vector field.</p>
+<p>Auto-detects whether system is autonomous by checking if time <code>t</code> 
+appears in any derivative after solving for dx/dt.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>equations</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="SymbolicODE = Union[List[syp.Expr], syp.Expr, str, List[str]]
+
+  
+      module-attribute
+   (PyDynSys.core.types.SymbolicODE)" href="#PyDynSys.core.SymbolicODE">SymbolicODE</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Symbolic system expressed as d(x_i)/dt - F_i(x, t), i=1,...,n
+-&gt; SymbolicODE = Union[List[syp.Expr], syp.Expr, str, List[str]]
+-&gt; str use is highly experimental and not recommended. </p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>variables</code>
+            </td>
+            <td>
+                  <code><span title="typing.List">List</span>[<span title="sympy.Function">Function</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of dependent variables as SymPy Function objects
+-&gt; support for strings may be supported later, but not a pressing matter.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>parameters</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="SystemParameters = Union[Dict[str, float], Dict[syp.Symbol, float]]
+
+  
+      module-attribute
+   (PyDynSys.core.types.SystemParameters)" href="#PyDynSys.core.SystemParameters">SystemParameters</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional parameter substitution dict 
+-&gt; SystemParameters = Union[Dict[str, float], Dict[syp.Symbol, float]]</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="SymbolicToVectorFieldResult
+
+
+  
+      dataclass
+   (PyDynSys.core.sym_utils.SymbolicToVectorFieldResult)" href="#PyDynSys.core.SymbolicToVectorFieldResult">SymbolicToVectorFieldResult</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>SymbolicToVectorFieldResult wrapper, which itself contains:
+- vector_field: Callable with appropriate signature
+- dimension: Phase space dimension n
+- is_autonomous: True &lt;==&gt;  partial(vector_field, t) = 0</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If system is not first-order </p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <blockquote>
+<blockquote>
+<blockquote>
+<p>t = syp.symbols('t')
+x, y = syp.symbols('x y', cls=syp.Function)
+x, y = x(t), y(t)
+eqs = [syp.diff(x, t) - y, syp.diff(y, t) + x]
+result = SymbolicSystemBuilder.build_vector_field(eqs, [x, y])
+result.is_autonomous  # True (no explicit t dependence)
+True</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</details>
+
+            <details class="quote">
+              <summary>Source code in <code>src/PyDynSys/core/sym_utils.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_vector_field</span><span class="p">(</span>
+    <span class="n">equations</span><span class="p">:</span> <span class="n">SymbolicODE</span><span class="p">,</span>
+    <span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">syp</span><span class="o">.</span><span class="n">Function</span><span class="p">],</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="n">SystemParameters</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SymbolicToVectorFieldResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert symbolic ODE system to numerical vector field.</span>
+
+<span class="sd">    Auto-detects whether system is autonomous by checking if time `t` </span>
+<span class="sd">    appears in any derivative after solving for dx/dt.</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        equations (SymbolicODE): Symbolic system expressed as d(x_i)/dt - F_i(x, t), i=1,...,n</span>
+<span class="sd">            -&gt; SymbolicODE = Union[List[syp.Expr], syp.Expr, str, List[str]]</span>
+<span class="sd">            -&gt; str use is highly experimental and not recommended. </span>
+<span class="sd">        variables (List[syp.Function]): List of dependent variables as SymPy Function objects</span>
+<span class="sd">            -&gt; support for strings may be supported later, but not a pressing matter.</span>
+<span class="sd">        parameters (SystemParameters): Optional parameter substitution dict </span>
+<span class="sd">            -&gt; SystemParameters = Union[Dict[str, float], Dict[syp.Symbol, float]]</span>
+
+
+<span class="sd">    Returns:</span>
+<span class="sd">        SymbolicToVectorFieldResult wrapper, which itself contains:</span>
+<span class="sd">            - vector_field: Callable with appropriate signature</span>
+<span class="sd">            - dimension: Phase space dimension n</span>
+<span class="sd">            - is_autonomous: True &lt;==&gt;  partial(vector_field, t) = 0</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If system is not first-order </span>
+
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; t = syp.symbols(&#39;t&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; x, y = syp.symbols(&#39;x y&#39;, cls=syp.Function)</span>
+<span class="sd">        &gt;&gt;&gt; x, y = x(t), y(t)</span>
+<span class="sd">        &gt;&gt;&gt; eqs = [syp.diff(x, t) - y, syp.diff(y, t) + x]</span>
+<span class="sd">        &gt;&gt;&gt; result = SymbolicSystemBuilder.build_vector_field(eqs, [x, y])</span>
+<span class="sd">        &gt;&gt;&gt; result.is_autonomous  # True (no explicit t dependence)</span>
+<span class="sd">        True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Parse symbolic input</span>
+    <span class="n">parsed_equations</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_parse_symbolic_input</span><span class="p">(</span><span class="n">equations</span><span class="p">)</span>
+
+    <span class="c1"># Validate first-order system</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_is_first_order_system</span><span class="p">(</span><span class="n">parsed_equations</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Only first-order systems are currently supported. &quot;</span>
+            <span class="s2">&quot;nth-order systems will be supported in future versions.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Get dimension</span>
+    <span class="n">dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span>
+
+    <span class="c1"># Solve for derivatives: d(x_i)/dt = F_i(x, t)</span>
+    <span class="n">t_sym</span> <span class="o">=</span> <span class="n">syp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>
+    <span class="n">derivatives</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">equation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parsed_equations</span><span class="p">):</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="n">syp</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="n">syp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">t_sym</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">derivatives</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">derivative</span><span class="p">)</span>
+
+    <span class="c1"># Normalise parameters and substitute</span>
+    <span class="n">normalised_parameters</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_normalise_parameters</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+
+    <span class="c1"># Convert Function objects to symbols for substitution</span>
+    <span class="n">state_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">]</span>
+    <span class="n">state_symbols</span> <span class="o">=</span> <span class="n">syp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">state_names</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">state_symbols</span> <span class="o">=</span> <span class="p">(</span><span class="n">state_symbols</span><span class="p">,)</span>  <span class="c1"># Ensure tuple</span>
+
+    <span class="c1"># Build function → symbol mapping</span>
+    <span class="k">if</span> <span class="n">dimension</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">function_to_symbol_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">state_symbols</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">function_to_symbol_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">var</span><span class="p">:</span> <span class="n">state_symbols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">variables</span><span class="p">)}</span>
+
+    <span class="c1"># Apply all substitutions</span>
+    <span class="n">all_substitutions</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">function_to_symbol_map</span><span class="p">,</span> <span class="o">**</span><span class="n">normalised_parameters</span><span class="p">}</span>
+    <span class="n">derivatives_substituted</span> <span class="o">=</span> <span class="p">[</span><span class="n">der</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">all_substitutions</span><span class="p">)</span> <span class="k">for</span> <span class="n">der</span> <span class="ow">in</span> <span class="n">derivatives</span><span class="p">]</span>
+
+    <span class="c1"># Detect autonomy</span>
+    <span class="n">is_autonomous</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_detect_autonomy</span><span class="p">(</span><span class="n">derivatives_substituted</span><span class="p">,</span> <span class="n">t_sym</span><span class="p">)</span>
+
+    <span class="c1"># Build appropriate vector field</span>
+    <span class="k">if</span> <span class="n">is_autonomous</span><span class="p">:</span>
+        <span class="n">vector_field</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_build_autonomous_field</span><span class="p">(</span>
+            <span class="n">derivatives_substituted</span><span class="p">,</span> <span class="n">state_symbols</span><span class="p">,</span> <span class="n">dimension</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">vector_field</span> <span class="o">=</span> <span class="n">SymbolicSystemBuilder</span><span class="o">.</span><span class="n">_build_nonautonomous_field</span><span class="p">(</span>
+            <span class="n">derivatives_substituted</span><span class="p">,</span> <span class="n">state_symbols</span><span class="p">,</span> <span class="n">t_sym</span><span class="p">,</span> <span class="n">dimension</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SymbolicToVectorFieldResult</span><span class="p">(</span>
+        <span class="n">vector_field</span><span class="o">=</span><span class="n">vector_field</span><span class="p">,</span>
+        <span class="n">dimension</span><span class="o">=</span><span class="n">dimension</span><span class="p">,</span>
+        <span class="n">is_autonomous</span><span class="o">=</span><span class="n">is_autonomous</span>
+    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="PyDynSys.core.SymbolicToVectorFieldResult" class="doc doc-heading">
+            <code>SymbolicToVectorFieldResult</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Result of converting symbolic ODE to numerical vector field.</p>
+<p>Encapsulates all information about the conversion process. Frozen
+to ensure immutability and hashability (if needed for caching).</p>
+
+
+<details class="fields" open>
+  <summary>Fields</summary>
+  <p>vector_field: Callable vector field with appropriate signature on is_autonomous bool.
+dimension: dimension of the phase space (not as linear subspace), i.e. #state_components
+is_autonomous: True &lt;==&gt; partial(vector_field, t) == 0</p>
+</details>
+
+<details class="future-extensions" open>
+  <summary>Future Extensions</summary>
+  <ul>
+<li>conversion_method: Details on nth → 1st order reduction (when supported)</li>
+<li>symbolic_derivatives: Cached symbolic forms for Jacobian</li>
+<li>parameter_values: Substituted parameters for reference</li>
+</ul>
+</details>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/PyDynSys/core/sym_utils.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SymbolicToVectorFieldResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Result of converting symbolic ODE to numerical vector field.</span>
+
+<span class="sd">    Encapsulates all information about the conversion process. Frozen</span>
+<span class="sd">    to ensure immutability and hashability (if needed for caching).</span>
+
+<span class="sd">    Fields:</span>
+<span class="sd">        vector_field: Callable vector field with appropriate signature on is_autonomous bool.</span>
+<span class="sd">        dimension: dimension of the phase space (not as linear subspace), i.e. #state_components</span>
+<span class="sd">        is_autonomous: True &lt;==&gt; partial(vector_field, t) == 0</span>
+
+<span class="sd">    Future Extensions:</span>
+<span class="sd">        - conversion_method: Details on nth → 1st order reduction (when supported)</span>
+<span class="sd">        - symbolic_derivatives: Cached symbolic forms for Jacobian</span>
+<span class="sd">        - parameter_values: Substituted parameters for reference</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vector_field</span><span class="p">:</span> <span class="n">VectorField</span>
+    <span class="n">dimension</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">is_autonomous</span><span class="p">:</span> <span class="nb">bool</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="PyDynSys.core.TrajectoryCacheKey" class="doc doc-heading">
+            <code>TrajectoryCacheKey</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>Immutable cache key for trajectory solutions.</p>
+<h5 id="PyDynSys.core.TrajectoryCacheKey--design-rationale-why-this-key-structure">DESIGN RATIONALE - Why This Key Structure:</h5>
+<p>Caches by initial conditions and evaluation domain, NOT by method.
+This allows retrieval regardless of solver used. Note: multi-method
+trajectories (segments solved with different methods) are valid.</p>
+<p>Why method is NOT in the cache key:
+- Removed to support multi-method trajectories (e.g., bidirectional integration
+  where backward uses RK45 and forward uses DOP853)
+- Same IVP solved with different methods should give similar results (modulo
+  numerical error), so caching without method is reasonable
+- Simplifies cache logic and enables trajectory composition</p>
+<p>Why initial_time IS in the cache key:
+- For autonomous systems (dx/dt = F(x)): initial_time doesn't affect trajectory
+  SHAPE in phase space, only the parameterization. However, we store it for
+  consistency and potential future time-shifted cache lookups.
+- For non-autonomous systems (dx/dt = F(x,t)): initial_time is CRITICAL!
+  The same initial state x_0 at different times evolves completely differently
+  due to time-dependent forcing. Example:
+    - System: dx/dt = -x + sin(t)
+    - x(0) = 1.0 at t_0=0: affected by sin(0)=0
+    - x(0) = 1.0 at t_0=π/2: affected by sin(π/2)=1
+  These produce entirely different trajectories despite same x_0!</p>
+<p>For autonomous systems: initial_time is conventionally t_span[0]
+For non-autonomous systems: initial_time matters and varies</p>
+
+
+<details class="fields" open>
+  <summary>Fields</summary>
+  <p>initial_conditions: x(t_0) as hashable tuple
+initial_time: t_0 (critical for non-autonomous, stored for autonomous too)
+t_eval_tuple: Evaluation time points as hashable tuple</p>
+</details>
+
+<details class="todo" open>
+  <summary>Future enhancements (smart caching):</summary>
+  <ul>
+<li>Smart cache lookup: merge cached [0,2] + [1,5] to get requested [1,3]
+  (use EuclideanTrajectory.from_segments to compose cached segments)</li>
+<li>Cache slicing: slice cached [1,3] to get requested [1,2]
+  (extract subset of evaluation points from cached trajectory)</li>
+</ul>
+</details>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/PyDynSys/core/types.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TrajectoryCacheKey</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Immutable cache key for trajectory solutions.</span>
+
+<span class="sd">    DESIGN RATIONALE - Why This Key Structure:</span>
+<span class="sd">    ------------------------------------------</span>
+<span class="sd">    Caches by initial conditions and evaluation domain, NOT by method.</span>
+<span class="sd">    This allows retrieval regardless of solver used. Note: multi-method</span>
+<span class="sd">    trajectories (segments solved with different methods) are valid.</span>
+
+<span class="sd">    Why method is NOT in the cache key:</span>
+<span class="sd">    - Removed to support multi-method trajectories (e.g., bidirectional integration</span>
+<span class="sd">      where backward uses RK45 and forward uses DOP853)</span>
+<span class="sd">    - Same IVP solved with different methods should give similar results (modulo</span>
+<span class="sd">      numerical error), so caching without method is reasonable</span>
+<span class="sd">    - Simplifies cache logic and enables trajectory composition</span>
+
+<span class="sd">    Why initial_time IS in the cache key:</span>
+<span class="sd">    - For autonomous systems (dx/dt = F(x)): initial_time doesn&#39;t affect trajectory</span>
+<span class="sd">      SHAPE in phase space, only the parameterization. However, we store it for</span>
+<span class="sd">      consistency and potential future time-shifted cache lookups.</span>
+<span class="sd">    - For non-autonomous systems (dx/dt = F(x,t)): initial_time is CRITICAL!</span>
+<span class="sd">      The same initial state x_0 at different times evolves completely differently</span>
+<span class="sd">      due to time-dependent forcing. Example:</span>
+<span class="sd">        - System: dx/dt = -x + sin(t)</span>
+<span class="sd">        - x(0) = 1.0 at t_0=0: affected by sin(0)=0</span>
+<span class="sd">        - x(0) = 1.0 at t_0=π/2: affected by sin(π/2)=1</span>
+<span class="sd">      These produce entirely different trajectories despite same x_0!</span>
+
+<span class="sd">    For autonomous systems: initial_time is conventionally t_span[0]</span>
+<span class="sd">    For non-autonomous systems: initial_time matters and varies</span>
+
+<span class="sd">    Fields:</span>
+<span class="sd">        initial_conditions: x(t_0) as hashable tuple</span>
+<span class="sd">        initial_time: t_0 (critical for non-autonomous, stored for autonomous too)</span>
+<span class="sd">        t_eval_tuple: Evaluation time points as hashable tuple</span>
+
+<span class="sd">    TODO: Future enhancements (smart caching):</span>
+<span class="sd">        - Smart cache lookup: merge cached [0,2] + [1,5] to get requested [1,3]</span>
+<span class="sd">          (use EuclideanTrajectory.from_segments to compose cached segments)</span>
+<span class="sd">        - Cache slicing: slice cached [1,3] to get requested [1,2]</span>
+<span class="sd">          (extract subset of evaluation points from cached trajectory)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Frozen dataclass ensures immutability → hashable → usable as dict key</span>
+    <span class="n">initial_conditions</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">initial_time</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">t_eval_tuple</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "search.highlight"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+      
+        <script src="../../javascript/katex-config.js"></script>
+      
+    
+  </body>
+</html>
