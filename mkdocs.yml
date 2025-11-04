@@ -1,4 +1,5 @@
 site_name: PyDynSys
+site_url: https://jg1011.github.io/PyDynSys
 repo_url: https://github.com/jg1011/PyDynSys
 
 theme:
