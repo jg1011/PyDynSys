@@ -36,6 +36,8 @@ nav:
         - Overview: api/core/euclidean.md
         - PhaseSpace: api/core/euclidean/phase_space.md
         - TimeHorizon: api/core/euclidean/time_horizon.md
+        - TrajectorySegment: api/core/euclidean/trajectory_segment.md
+        - Trajectory: api/core/euclidean/trajectory.md
     - Vis:
       - Overview: api/vis.md
       - Euclidean:

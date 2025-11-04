@@ -1,13 +1,13 @@
 """Trajectory representation for Euclidean dynamical systems."""
 
-from typing import Tuple, List, Optional, Callable, Dict, Any
+from typing import Tuple, List, Optional, Callable, Union
 import numpy as np
 from numpy.typing import NDArray
 
 from ..types import SciPyIvpSolution, TrajectorySegmentMergePolicy
 
 
-class EuclideanTrajectorySegment: 
+class TrajectorySegment: 
     """
     Represents a numerically computed segment of a trajectory on a monotone increasing evaluation space. 
     
@@ -27,21 +27,16 @@ class EuclideanTrajectorySegment:
         Users primarily interact with EuclideanTrajectory, which aggregates segments.
     """
     
-    def __init__(self):
-        """
-        Private constructor - use from_scipy_solution() factory instead.
-        
-        Direct instantiation is discouraged to enforce factory pattern and ensure
-        proper initialization from scipy solve_ivp results.
-        """
-        pass
+    
+    ### --- Factory Methods --- ###
+    
     
     @classmethod
     def from_scipy_solution(
         cls, 
         sol: SciPyIvpSolution, 
         method: str
-    ) -> 'EuclideanTrajectorySegment':
+    ) -> 'TrajectorySegment':
         """
         Factory: Create segment from scipy solve_ivp solution.
         
@@ -57,47 +52,28 @@ class EuclideanTrajectorySegment:
         
         Example:
             >>> from scipy.integrate import solve_ivp
-            >>> result = solve_ivp(...)
-            >>> wrapped = SciPyIvpSolution(raw_solution=result)
-            >>> segment = EuclideanTrajectorySegment.from_scipy_solution(wrapped, 'RK45')
+            >>> result = solve_ivp(fun, t_span, y0, t_eval, method, dense_output)
+            >>> wrapped = SciPyIvpSolution(raw_solution=result) # not necessary, but provides type safety
+            >>> segment = EuclideanTrajectorySegment.from_scipy_solution(wrapped, 'RK45') # default method is RK45
         """
         segment = cls()
+        t = sol.t # shape = (n_points,)
+        y = sol.y # shape = (n_dim, n_points)
         
-        # Extract time and state arrays from scipy solution
-        # t is shape (n_points,), y is shape (n_dim, n_points)
-        t = sol.t
-        y = sol.y
-        
-        # CRITICAL: Enforce monotone increasing time convention
-        # Backward integration (t_span[0] > t_span[1]) produces t[0] > t[-1]
-        # We reverse both arrays to maintain monotone increasing property
-        # This is essential for:
-        #   1. Consistent domain representation: domain = (t[0], t[-1]) always has t[0] < t[-1]
-        #   2. Trajectory composition: merging segments requires consistent ordering
-        #   3. Interpolation: Finding containing segment via binary search (future optimization)
+        # Enforce monotone increasing time convention
         if len(t) > 1 and t[0] > t[-1]:
-            # Backward integration detected (time decreases)
-            # Reverse time array: [t_n, ..., t_1, t_0] → [t_0, t_1, ..., t_n]
+            # Backward integration detected (time decreases): reverse arrays
             t = t[::-1]
-            # Reverse state columns to match: [:, [n, ..., 1, 0]] → [:, [0, 1, ..., n]]
             y = y[:, ::-1]
         
-        # Store arrays and extract domain endpoints
         segment.t = t
         segment.y = y
-        # Domain is the time interval [a, b] where segment is defined
-        # After reversing (if needed), t[0] is always the start, t[-1] is always the end
         segment.domain = (float(t[0]), float(t[-1]))
         
         # Store interpolant (callable or None)
-        # If dense_output=True was used in solve_ivp, sol.sol is a callable f(t) → x(t)
-        # This allows continuous evaluation between discrete points in t
-        # If dense_output=False, sol.sol is None and interpolation will raise an error
+        ## NOTE: this is some iff dense_output=True flag passed to solve_ivp fn.
         segment.interpolant = sol.sol
-        
-        # Store method and metadata for debugging/caching
-        # Method string (e.g., 'RK45', 'LSODA') identifies the numerical integrator used
-        # Metadata preserves scipy's success flag and termination message
+
         segment.method = method
         segment.meta = {
             'success': sol.success,
@@ -105,6 +81,10 @@ class EuclideanTrajectorySegment:
         }
         
         return segment
+    
+    
+        ### --- Public Methods --- ###
+        
     
     def in_domain(self, t: float) -> bool:
         """
@@ -118,7 +98,7 @@ class EuclideanTrajectorySegment:
         """
         return self.domain[0] <= t <= self.domain[1]
     
-    def interpolate(self, t: float) -> NDArray[np.float64]:
+    def interpolant_at_time(self, t: float) -> NDArray[np.float64]:
         """
         Evaluate interpolant at time t.
         
@@ -126,39 +106,28 @@ class EuclideanTrajectorySegment:
         the segment domain. Raises errors if t is outside domain or if no interpolant
         is available (dense_output=False in original solve_ivp call).
         
+        NOTE: For speed, we employ agressive programming here and assume 
+            1. t is in domain 
+            2. interpolant is available
+        If either of these fails, an esoteric error may be incurred. This is a worthwhile 
+        tradeoff as this function may be called thousands of times (e.g. when plotting a trajectory).
+        
         Args:
             t (float): Time point for evaluation
         
         Returns:
             NDArray[np.float64]: State vector x(t) at time t, shape (n,)
         
-        Raises:
-            ValueError: If t outside segment domain or interpolant unavailable
-        
         Example:
             >>> x_t = segment.interpolate(0.5)  # Evaluate at t=0.5
         """
-        if not self.in_domain(t):
-            raise ValueError(
-                f"Time t={t} outside segment domain {self.domain}. "
-                f"Interpolant only valid on [{self.domain[0]}, {self.domain[1]}]."
-            )
-        
-        if self.interpolant is None:
-            raise ValueError(
-                "No interpolant available (dense_output was False). "
-                "Set dense_output=True in trajectory() call to enable interpolation."
-            )
-        
-        # Call scipy interpolant and return as 1D array
         result = self.interpolant(t)
-        # Handle both scalar and array returns from interpolant
         if result.ndim == 2:
             return result[:, 0]  # Extract column vector as 1D
         return result
     
     
-class EuclideanTrajectory: 
+class Trajectory: 
     """
     Represents a numerically computed trajectory on a subset of the real line ℝ.
     
@@ -170,41 +139,65 @@ class EuclideanTrajectory:
     
     Fields: 
         segments (List[EuclideanTrajectorySegment]): Trajectory segments in ascending domain order
-        domains (List[Tuple[float, float]]): Domain intervals [t_i, t_{i+1}], guaranteed disjoint
+        domains (List[Tuple[float, float]]): Domain intervals [t_i, t_{i+1}] in ascending order
         meta (Dict[str, Any]): Aggregate metadata from all segments
     
     Properties:
         t: Concatenated evaluation times from all segments
         y: Concatenated states from all segments
-    
+        
     Usage:
         Created via from_segments() factory. Primary user-facing class returned by
         system.trajectory() method. Provides seamless interpolation across segments.
     
     Example:
-        >>> sys = AutonomousEuclideanDS(...)
+        >>> sys = AutonomousDS(...)
         >>> traj = sys.trajectory(x0, t_span=(0, 10), t_eval=np.linspace(0, 10, 100))
-        >>> x_at_5 = traj.interpolate(5.0)  # Seamlessly finds right segment
+        >>> x_at_5 = traj.interpolate(5.0)
     """
     
-    def __init__(self):
-        """
-        Private constructor - use from_segments() factory instead.
-        """
-        pass
+    
+    ### --- Factory Methods --- ###
+    
     
     @classmethod
     def from_segments(
         cls,
-        segments: List[EuclideanTrajectorySegment],
+        segments: List[TrajectorySegment],
         merge_policy: TrajectorySegmentMergePolicy = 'average'  # Default: average overlapping values
-    ) -> 'EuclideanTrajectory':
+    ) -> 'Trajectory':
         """
         Factory: Create trajectory from list of segments, merging overlaps if needed.
         
-        Sorts segments by domain start time, detects overlapping domains, and merges
-        them according to specified policy. After merging, validates that all final
-        segment domains are disjoint (class invariant).
+        MERGE ALGORITHM: Iterative Fixed-Point Approach
+        ------------------------------------------------
+        This method implements an iterative fixed-point algorithm to merge overlapping
+        segments until all domains are disjoint (class invariant).
+        
+        Problem: Cascading overlaps require multiple merge passes.
+        Example: Segments [[0,1], [0.5,2], [1,3]] have:
+          - Pass 1: Merge [0,1] + [0.5,2] → [0,2]
+          - Pass 2: Merge [0,2] + [1,3] → [0,3]
+        
+        Algorithm:
+          1. Sort segments by domain start time (ensures left-to-right processing)
+          2. Fixed-point iteration:
+             a. Scan through current segment list left-to-right
+             b. For each consecutive pair, detect overlap
+             c. If overlap exists, merge the pair and add to result
+             d. If no overlap, add current segment to result
+             e. If any merges occurred, repeat from step 2a
+             f. If no merges occurred, fixed point reached → done
+        
+        Invariant: At each iteration, segments in the working list are sorted by start time.
+        This ensures that after merging two consecutive segments, the merged segment
+        cannot overlap with any previously processed segments (they all ended before
+        the current segment started, by the inductive property of sorted order).
+        
+        Termination: Guaranteed because:
+          - Each merge reduces the number of segments by 1
+          - Minimum segments = 1 (fully merged trajectory)
+          - Maximum iterations = n-1 (worst case: chain of n segments)
         
         Args:
             segments (List[EuclideanTrajectorySegment]): Segments to compose
@@ -219,69 +212,85 @@ class EuclideanTrajectory:
         
         Raises:
             ValueError: If final domains are not disjoint (merging failed)
+            RuntimeError: If merge algorithm fails to converge (indicates bug)
             NotImplementedError: If merge_policy is not 'average' (others not yet implemented)
         
         Example:
-            >>> seg1 = EuclideanTrajectorySegment.from_scipy_solution(sol1, 'RK45')
-            >>> seg2 = EuclideanTrajectorySegment.from_scipy_solution(sol2, 'RK45')
-            >>> traj = EuclideanTrajectory.from_segments([seg1, seg2])
+            >>> seg1 = TrajectorySegment.from_scipy_solution(sol1, 'RK45')
+            >>> seg2 = TrajectorySegment.from_scipy_solution(sol2, 'RK45')
+            >>> traj = Trajectory.from_segments([seg1, seg2])
         """
         if not segments:
             raise ValueError("Cannot create trajectory from empty segment list")
         
-        # STEP 1: Sort segments by domain start time
-        # Ensures we process segments in chronological order for overlap detection
-        # e.g., [seg(5,10), seg(0,3), seg(2,7)] → [seg(0,3), seg(2,7), seg(5,10)]
-        sorted_segments = sorted(segments, key=lambda seg: seg.domain[0])
+        # Sort segments by domain start time (critical for correct merge order)
+        working_segments = sorted(segments, key=lambda seg: seg.domain[0])
         
-        # STEP 2: Detect and merge overlaps
-        # Overlapping domains arise from:
-        #   - Bidirectional integration: segments may share boundary point (tangent)
-        #   - Re-solving: computing [0,1.5] and [0.5,2] separately, then composing
-        #   - Patching: fixing numerical issues in specific regions
-        # 
-        # We process pairs sequentially, merging where overlaps exist.
-        # After merging, the invariant "all domains disjoint" is enforced.
-        merged_segments = []
-        i = 0
-        while i < len(sorted_segments):
-            current = sorted_segments[i]
+        
+        # ITERATIVE FIXED-POINT MERGE ALGORITHM #
+        ## o(num_segments^2) worst case complexity
+        changed = True
+        iteration = 0
+        max_iterations = len(segments)  # Safety limit (should never be reached)
+        while changed and iteration < max_iterations:
+            changed = False
+            merged_segments = []
+            i = 0
             
-            # Check if next segment overlaps with current
-            # Overlaps only occur between consecutive segments (after sorting)
-            if i + 1 < len(sorted_segments):
-                next_seg = sorted_segments[i + 1]
-                # Returns overlap interval [a, b] if domains intersect, else None
-                overlap = cls._detect_overlap(current, next_seg)
+            # pass through working segments, merging consecutive overlaps
+            while i < len(working_segments):
+                current = working_segments[i]
                 
-                if overlap is not None:
-                    # Overlapping segments - merge them
-                    if merge_policy == 'average':
-                        merged = cls._merge_segments_average(current, next_seg, overlap)
-                        merged_segments.append(merged)
-                        i += 2  # Skip both segments (merged into one)
-                    elif merge_policy == 'left':
-                        raise NotImplementedError(
-                            f"Merge policy 'left' not yet implemented. Use 'average' for now."
-                        )
-                    elif merge_policy == 'right':
-                        raise NotImplementedError(
-                            f"Merge policy 'right' not yet implemented. Use 'average' for now."
-                        )
-                    elif merge_policy == 'stitch':
-                        raise NotImplementedError(
-                            f"Merge policy 'stitch' not yet implemented. Use 'average' for now."
-                        )
+                if i + 1 < len(working_segments):
+                    next_seg = working_segments[i + 1]
+                    overlap = cls._detect_overlap(current, next_seg)
+                    
+                    if overlap is not None:
+                        # Overlapping segments detected - merge them
+                        if merge_policy == 'average':
+                            merged = cls._merge_segments_average(current, next_seg, overlap)
+                            merged_segments.append(merged)
+                            i += 2  # Skip both segments (merged into one)
+                            changed = True  # Mark that we made progress
+                        elif merge_policy == 'left':
+                            merged = cls._merge_segments_left(current, next_seg, overlap)
+                            merged_segments.append(merged)
+                            i += 2  # Skip both segments (merged into one)
+                            changed = True  # Mark that we made progress
+                        elif merge_policy == 'right':
+                            merged = cls._merge_segments_right(current, next_seg, overlap)
+                            merged_segments.append(merged)
+                            i += 2  # Skip both segments (merged into one)
+                            changed = True  # Mark that we made progress
+                        elif merge_policy == 'stitch':
+                            merged = cls._merge_segments_stitch(current, next_seg, overlap)
+                            merged_segments.append(merged)
+                            i += 2  # Skip both segments (merged into one)
+                            changed = True  # Mark that we made progress
+                        else:
+                            raise ValueError(f"Unknown merge policy: {merge_policy}")
                     else:
-                        raise ValueError(f"Unknown merge policy: {merge_policy}")
+                        # Disjoint segments - keep current and move forward
+                        merged_segments.append(current)
+                        i += 1
                 else:
-                    # Disjoint segments - keep current
+                    # Last segment - no next segment to check for overlap
                     merged_segments.append(current)
                     i += 1
-            else:
-                # Last segment - no next to check
-                merged_segments.append(current)
-                i += 1
+            
+            # Update working list for next iteration (if needed)
+            working_segments = merged_segments
+            iteration += 1
+        
+        if iteration >= max_iterations:
+            # This should never happen in practice, but safety check
+            raise RuntimeError(
+                f"Merge algorithm failed to converge after {max_iterations} iterations. "
+                f"This indicates a bug in the merge logic."
+            )
+        
+        # Final merged segments (guaranteed disjoint by fixed-point property)
+        merged_segments = working_segments
         
         # Create trajectory instance
         trajectory = cls()
@@ -295,221 +304,53 @@ class EuclideanTrajectory:
             'methods': [seg.method for seg in merged_segments],
         }
         
-        # Validate disjoint domains (class invariant)
-        trajectory._validate_disjoint_domains()
         
+        trajectory._validate_disjoint_domains() # Validate disjoint domains (class invariant)
         return trajectory
     
-    @staticmethod
-    def _detect_overlap(
-        seg1: EuclideanTrajectorySegment,
-        seg2: EuclideanTrajectorySegment
-    ) -> Optional[Tuple[float, float]]:
+    
+        ### --- Public Methods --- ###
+        
+    
+    def merge(
+        self,
+        other: 'Trajectory',
+        merge_policy: TrajectorySegmentMergePolicy = 'average'
+    ) -> 'Trajectory':
         """
-        Detect if two segments have overlapping domains.
+        Join this trajectory with another trajectory.
+        
+        Combines segments from both trajectories and merges any overlaps using
+        the specified merge policy. Uses the same iterative fixed-point merge
+        algorithm as from_segments() to handle cascading overlaps.
         
         Args:
-            seg1, seg2: Segments to check (assumed seg1.domain[0] <= seg2.domain[0])
+            other (Trajectory): The other trajectory to join with self
+            merge_policy (TrajectorySegmentMergePolicy): Strategy for handling overlaps
+                - 'average' (DEFAULT): Average y values in overlap region
+                - 'left': Use left segment in overlap
+                - 'right': Use right segment in overlap
+                - 'stitch': Left interpolant until midpoint, then right
         
         Returns:
-            Tuple[float, float]: Overlap interval [a, b] if overlap exists, else None
-        """
-        # seg1 ends before seg2 starts → disjoint
-        if seg1.domain[1] <= seg2.domain[0]:
-            return None
-        
-        # Overlapping: intersection is [max(starts), min(ends)]
-        overlap_start = max(seg1.domain[0], seg2.domain[0])
-        overlap_end = min(seg1.domain[1], seg2.domain[1])
-        
-        return (overlap_start, overlap_end)
-    
-    @staticmethod
-    def _merge_segments_average(
-        seg1: EuclideanTrajectorySegment,
-        seg2: EuclideanTrajectorySegment,
-        overlap: Tuple[float, float]
-    ) -> EuclideanTrajectorySegment:
-        """
-        Merge two overlapping segments by averaging y values in overlap region.
-        
-        MATHEMATICAL CONTEXT:
-        --------------------
-        When we have two numerical approximations of the same trajectory x(t) over
-        overlapping time intervals, we need to reconcile the competing values.
-        
-        Example scenario:
-          Segment 1: [0, 1.5] computed with RK45, gives x(1.0) ≈ 0.5403
-          Segment 2: [0.5, 2] computed with DOP853, gives x(1.0) ≈ 0.5404
-        
-        In overlap [0.5, 1.5], both segments provide approximations. The 'average'
-        policy takes the midpoint: x_merged(1.0) = (0.5403 + 0.5404)/2 = 0.54035
-        
-        This is optimal when both segments have similar accuracy/trust levels.
-        
-        Strategy:
-        1. Identify evaluation points in each region (pre-overlap, overlap, post-overlap)
-        2. In overlap: average y values at shared t points (within tolerance 1e-9)
-        3. Concatenate regions to form merged segment
-        4. Interpolant: Set to None (averaging interpolants non-trivial, future work)
-        
-        Args:
-            seg1, seg2: Overlapping segments (seg1.domain[0] <= seg2.domain[0] assumed)
-            overlap: Overlap interval [a, b] where both segments are defined
-        
-        Returns:
-            EuclideanTrajectorySegment: Merged segment spanning union of domains
-        """
-        overlap_start, overlap_end = overlap
-        # Tolerance for identifying shared t values (accounts for floating-point error)
-        # Two points at t1 and t2 are considered "same" if |t1 - t2| < 1e-9
-        tol = 1e-9
-        
-        # ====================================================================
-        # REGION DECOMPOSITION
-        # ====================================================================
-        # Split both segments into three regions:
-        #   1. Pre-overlap (only in seg1)
-        #   2. Overlap (in both segments)
-        #   3. Post-overlap (only in seg2)
-        #
-        # Example: seg1=[0,1.5], seg2=[0.5,2], overlap=[0.5,1.5]
-        #   seg1_before: [0, 0.5)
-        #   seg1_overlap: [0.5, 1.5]
-        #   seg2_overlap: [0.5, 1.5]  (competing values with seg1!)
-        #   seg2_after: (1.5, 2]
-        
-        t1_before = seg1.t[seg1.t < overlap_start]
-        y1_before = seg1.y[:, seg1.t < overlap_start]
-        
-        t1_overlap = seg1.t[(seg1.t >= overlap_start) & (seg1.t <= overlap_end)]
-        y1_overlap = seg1.y[:, (seg1.t >= overlap_start) & (seg1.t <= overlap_end)]
-        
-        t2_overlap = seg2.t[(seg2.t >= overlap_start) & (seg2.t <= overlap_end)]
-        y2_overlap = seg2.y[:, (seg2.t >= overlap_start) & (seg2.t <= overlap_end)]
-        
-        t2_after = seg2.t[seg2.t > overlap_end]
-        y2_after = seg2.y[:, seg2.t > overlap_end]
-        
-        # ====================================================================
-        # MERGE OVERLAP REGION VIA AVERAGING
-        # ====================================================================
-        # Merge overlap region by averaging at shared t points
-        #
-        # Key challenge: The two segments may have different evaluation grids!
-        #   seg1 might evaluate at t = [0.5, 0.7, 0.9, 1.1, 1.3, 1.5]
-        #   seg2 might evaluate at t = [0.5, 0.8, 1.0, 1.2, 1.5]
-        #
-        # Shared points (within tolerance): 0.5, 1.5
-        # Unique to seg1: 0.7, 0.9, 1.1, 1.3
-        # Unique to seg2: 0.8, 1.0, 1.2
-        #
-        # Strategy: Take union of all t values, average where both exist
-        
-        # Union of all t values in overlap (automatically removes duplicates)
-        t_overlap_all = np.unique(np.concatenate([t1_overlap, t2_overlap]))
-        n_dim = seg1.y.shape[0]  # Phase space dimension
-        y_overlap_merged = np.zeros((n_dim, len(t_overlap_all)))
-        
-        # For each time point in the union, decide how to set the merged value
-        for i, t_val in enumerate(t_overlap_all):
-            # Check if this time point exists in each segment (within tolerance)
-            # Using tolerance to handle floating-point comparison issues
-            in_seg1 = np.any(np.abs(t1_overlap - t_val) < tol)
-            in_seg2 = np.any(np.abs(t2_overlap - t_val) < tol)
-            
-            if in_seg1 and in_seg2:
-                # CASE 1: Shared point (exists in both segments)
-                # Both segments provide a value at this t → AVERAGE them
-                # This is the core of the 'average' merge policy
-                idx1 = np.argmin(np.abs(t1_overlap - t_val))  # Find closest point in seg1
-                idx2 = np.argmin(np.abs(t2_overlap - t_val))  # Find closest point in seg2
-                # Average the state vectors: x_merged = (x_seg1 + x_seg2) / 2
-                y_overlap_merged[:, i] = (y1_overlap[:, idx1] + y2_overlap[:, idx2]) / 2
-                
-            elif in_seg1:
-                # CASE 2: Only in seg1 (seg2 didn't evaluate here)
-                # Keep seg1's value unchanged (no averaging needed)
-                idx1 = np.argmin(np.abs(t1_overlap - t_val))
-                y_overlap_merged[:, i] = y1_overlap[:, idx1]
-                
-            else:
-                # CASE 3: Only in seg2 (seg1 didn't evaluate here)
-                # Keep seg2's value unchanged (no averaging needed)
-                idx2 = np.argmin(np.abs(t2_overlap - t_val))
-                y_overlap_merged[:, i] = y2_overlap[:, idx2]
-        
-        # ====================================================================
-        # FINAL ASSEMBLY
-        # ====================================================================
-        # Concatenate all three regions to form the complete merged segment
-        # Order: [pre-overlap from seg1] + [merged overlap] + [post-overlap from seg2]
-        t_merged = np.concatenate([t1_before, t_overlap_all, t2_after])
-        y_merged = np.concatenate([y1_before, y_overlap_merged, y2_after], axis=1)
-        
-        # Create merged segment
-        merged = EuclideanTrajectorySegment()
-        merged.t = t_merged
-        merged.y = y_merged
-        merged.domain = (float(t_merged[0]), float(t_merged[-1]))
-        
-        # INTERPOLANT LIMITATION:
-        # Averaging two interpolants is non-trivial mathematically
-        # Each interpolant is a polynomial valid only on its subdomain
-        # To create a merged interpolant, we'd need to:
-        #   1. Sample both interpolants densely in overlap region
-        #   2. Average the samples
-        #   3. Fit a new spline to the averaged data
-        # This is left as future work. For now, interpolant = None
-        merged.interpolant = None
-        
-        # Method string indicates multi-method composition
-        # e.g., "RK45+DOP853" shows this segment combines two different solvers
-        merged.method = f"{seg1.method}+{seg2.method}"
-        
-        # Metadata: Aggregate success flags and messages from both segments
-        merged.meta = {
-            'success': seg1.meta['success'] and seg2.meta['success'],
-            'message': f"Merged: {seg1.meta['message']} | {seg2.meta['message']}",
-        }
-        
-        return merged
-    
-    def _validate_disjoint_domains(self) -> None:
-        """
-        Validate that all segment domains are disjoint (class invariant).
-        
-        CLASS INVARIANT:
-        ---------------
-        After merging, all segment domains MUST be disjoint (non-overlapping).
-        This is enforced by:
-          - from_segments(): Detects and merges all overlaps before validation
-          - This method: Final check that merging succeeded
-        
-        Mathematically: For domains [a_i, b_i], we require:
-          b_i <= a_{i+1} for all consecutive pairs i, i+1
-        
-        Tangent domains ([a,b] and [b,c]) are allowed (b_i = a_{i+1}).
-        Disjoint domains ([a,b] and [c,d] with b < c) are allowed.
-        Overlapping domains ([a,b] and [c,d] with c < b < d) are NOT allowed after merging.
-        
-        Checks that domains[i][1] <= domains[i+1][0] for all consecutive pairs.
-        This ensures no overlap remains after merging.
+            Trajectory: New trajectory containing all segments from both trajectories,
+                with overlaps merged according to merge_policy
         
         Raises:
-            ValueError: If any domains overlap (indicates bug in merge logic)
+            ValueError: If final domains are not disjoint (merging failed)
+            RuntimeError: If merge algorithm fails to converge (indicates bug)
+            NotImplementedError: If merge_policy is not 'average' (others not yet implemented)
+        
+        Example:
+            >>> traj1 = sys1.trajectory(x0, t_span=(0, 5))
+            >>> traj2 = sys2.trajectory(x1, t_span=(3, 10))
+            >>> combined = traj1.join(traj2)  # Merges overlap in [3, 5]
         """
-        for i in range(len(self.domains) - 1):
-            current_end = self.domains[i][1]
-            next_start = self.domains[i + 1][0]
-            
-            # Check for overlap: current segment extends past start of next segment
-            if current_end > next_start:
-                raise ValueError(
-                    f"Segment domains are not disjoint: "
-                    f"domain {i} ends at {current_end}, but domain {i+1} starts at {next_start}. "
-                    f"Overlapping domains detected after merging. This is a bug in merge logic."
-                )
+        # Combine segments from both trajectories
+        combined_segments = list(self.segments) + list(other.segments)
+        
+        # Use from_segments factory to merge overlaps and create new trajectory
+        return Trajectory.from_segments(combined_segments, merge_policy=merge_policy)
     
     def in_domain(self, t: float) -> bool:
         """
@@ -558,37 +399,21 @@ class EuclideanTrajectory:
             >>> traj = sys.trajectory(...)  # May have multiple segments
             >>> x_5 = traj.interpolate(5.0)  # Seamlessly finds right segment
         """
-        # Find which segment contains this time point
         segment = self._find_segment_containing(t)
         
         if segment is None:
-            # t is not in any segment's domain (e.g., in a gap or outside all domains)
             raise ValueError(
                 f"Time t={t} not in any segment domain. "
                 f"Available domains: {self.domains}"
             )
         
-        # Delegate to the segment's interpolant
         # This may further raise ValueError if segment has no interpolant (dense_output=False)
         return segment.interpolate(t)
     
-    def _find_segment_containing(self, t: float) -> Optional[EuclideanTrajectorySegment]:
-        """
-        Find segment whose domain contains time t.
-        
-        Uses linear search (optimize with binary search later if needed).
-        
-        Args:
-            t (float): Time point to locate
-        
-        Returns:
-            EuclideanTrajectorySegment if found, else None
-        """
-        for segment in self.segments:
-            if segment.in_domain(t):
-                return segment
-        return None
     
+        ### -- Properties --- ###
+        
+        
     @property
     def t(self) -> NDArray[np.float64]:
         """
@@ -643,3 +468,344 @@ class EuclideanTrajectory:
         if len(messages) == 1:
             return messages[0]
         return " | ".join(messages)
+    
+    
+        ### --- Dunder Methods --- ### 
+        
+    
+    def __str__(self) -> str:
+        return f"Trajectory(domains={self.domains})"
+    
+    def __repr__(self) -> str:
+        return f"Trajectory(domains={self.domains})"
+    
+    def __len__(self) -> int:
+        return len(self.segments)
+    
+    def __getitem__(self, index: Union[int, slice]) -> Union[TrajectorySegment, List[TrajectorySegment]]:
+        if isinstance(index, slice):
+            return self.segments[index]  
+        return self.segments[index]      
+    
+    def __add__(self, other: 'Trajectory') -> 'Trajectory':
+        return self.merge(other)
+            
+    
+        ### --- Private Methods --- ###
+        
+    
+    @staticmethod
+    def _detect_overlap(
+        seg1: TrajectorySegment,
+        seg2: TrajectorySegment
+    ) -> Optional[Tuple[float, float]]:
+        """
+        Detect if two segments have overlapping domains.
+        
+        Args:
+            seg1, seg2: Segments to check (assumed seg1.domain[0] <= seg2.domain[0])
+        
+        Returns:
+            Tuple[float, float]: Overlap interval [a, b] if overlap exists, else None
+        """
+        # seg1 ends before seg2 starts → disjoint
+        if seg1.domain[1] <= seg2.domain[0]:
+            return None
+        
+        # Overlapping: intersection is [max(starts), min(ends)]
+        overlap_start = max(seg1.domain[0], seg2.domain[0])
+        overlap_end = min(seg1.domain[1], seg2.domain[1])
+        
+        return (overlap_start, overlap_end)
+    
+    @staticmethod
+    def _create_merged_interpolant(
+        seg1: TrajectorySegment,
+        seg2: TrajectorySegment,
+        overlap: Tuple[float, float],
+        merged_domain: Tuple[float, float]
+    ) -> Optional[Callable[[float], NDArray[np.float64]]]:
+        """
+        Create piecewise interpolant for merged segment.
+        
+        PIECEWISE DEFINITION:
+        ---------------------
+        For merged segment with overlap [overlap_start, overlap_end]:
+        
+        1. Pre-overlap region [seg1.domain[0], overlap_start):
+           c(t) = seg1.interpolant(t)
+        
+        2. Overlap region [overlap_start, overlap_end]:
+           c(t) = (seg1.interpolant(t) + seg2.interpolant(t)) / 2
+        
+        3. Post-overlap region (overlap_end, seg2.domain[1]]:
+           c(t) = seg2.interpolant(t)
+        
+        This matches the discrete averaging policy: where both segments provide
+        values, we average them; elsewhere, we use the single available value.
+        
+        Args:
+            seg1, seg2: Overlapping segments (seg1.domain[0] <= seg2.domain[0] assumed)
+            overlap: Overlap interval [overlap_start, overlap_end]
+            merged_domain: Final domain [t_min, t_max] of merged segment
+        
+        Returns:
+            Callable interpolant function, or None if either segment lacks interpolant
+        """
+        overlap_start, overlap_end = overlap
+        seg1_start, seg1_end = seg1.domain
+        seg2_start, seg2_end = seg2.domain
+        merged_start, merged_end = merged_domain
+        
+        # If either segment lacks interpolant, cannot create merged interpolant
+        if seg1.interpolant is None or seg2.interpolant is None:
+            return None
+        
+        def merged_interpolant(t: float) -> NDArray[np.float64]:
+            """
+            Piecewise merged interpolant evaluating at time t.
+            
+            Handles shape normalization for scipy interpolants which may return
+            shape (n_dim,) or (n_dim, 1).
+            """         
+            # Helper to normalize scipy interpolant output shape
+            def normalize_result(result: NDArray) -> NDArray[np.float64]:
+                """Normalize scipy interpolant output to shape (n_dim,)."""
+                if result.ndim == 2:
+                    return result[:, 0]
+                return result
+            
+            # Region 1: Pre-overlap (only seg1)
+            if seg1_start <= t < overlap_start:
+                result = seg1.interpolant(t)
+                return normalize_result(result)
+            
+            # Region 2: Overlap (average both segments)
+            elif overlap_start <= t <= overlap_end:
+                result1 = seg1.interpolant(t)
+                result2 = seg2.interpolant(t)
+                # Normalize shapes, then average
+                result1 = normalize_result(result1)
+                result2 = normalize_result(result2)
+                return (result1 + result2) / 2
+            
+            # Region 3: Post-overlap (only seg2)
+            elif overlap_end < t <= seg2_end:
+                result = seg2.interpolant(t)
+                return normalize_result(result)
+        
+        return merged_interpolant
+    
+    @staticmethod
+    def _merge_segments_average(
+        seg1: TrajectorySegment,
+        seg2: TrajectorySegment,
+        overlap: Tuple[float, float]
+    ) -> TrajectorySegment:
+        """
+        Merge two overlapping segments by averaging y values in overlap region.
+        
+        MATHEMATICAL CONTEXT:
+        --------------------
+        When we have two numerical approximations of the same trajectory x(t) over
+        overlapping time intervals, we need to reconcile the competing values.
+        
+        Example scenario:
+          Segment 1: [0, 1.5] computed with RK45, gives x(1.0) ≈ 0.5403
+          Segment 2: [0.5, 2] computed with DOP853, gives x(1.0) ≈ 0.5404
+        
+        In overlap [0.5, 1.5], both segments provide approximations. The 'average'
+        policy takes the midpoint: x_merged(1.0) = (0.5403 + 0.5404)/2 = 0.54035
+        
+        This is optimal when both segments have similar accuracy/trust levels.
+        
+        Strategy:
+        1. Identify evaluation points in each region (pre-overlap, overlap, post-overlap)
+        2. In overlap: average y values at shared t points (within tolerance 1e-9)
+        3. Concatenate regions to form merged segment
+        4. Interpolant: Create piecewise interpolant matching the averaging policy
+        
+        Args:
+            seg1, seg2: Overlapping segments (seg1.domain[0] <= seg2.domain[0] assumed)
+            overlap: Overlap interval [a, b] where both segments are defined
+        
+        Returns:
+            TrajectorySegment: Merged segment spanning union of domains
+        """
+        overlap_start, overlap_end = overlap
+        tol = 1e-4 # Two points at t1 and t2 are considered "same" if |t1 - t2| < 1e-4
+        
+        # Split both segments into three regions:
+        #   1. Pre-overlap (only in seg1)
+        #   2. Overlap (in both segments)
+        #   3. Post-overlap (only in seg2)
+        t1_before = seg1.t[seg1.t < overlap_start]
+        y1_before = seg1.y[:, seg1.t < overlap_start]
+        t1_overlap = seg1.t[(seg1.t >= overlap_start) & (seg1.t <= overlap_end)]
+        y1_overlap = seg1.y[:, (seg1.t >= overlap_start) & (seg1.t <= overlap_end)]
+        t2_overlap = seg2.t[(seg2.t >= overlap_start) & (seg2.t <= overlap_end)]
+        y2_overlap = seg2.y[:, (seg2.t >= overlap_start) & (seg2.t <= overlap_end)]
+        t2_after = seg2.t[seg2.t > overlap_end]
+        y2_after = seg2.y[:, seg2.t > overlap_end]
+        
+
+        # Merge overlap region by averaging at shared t points
+        ## Strategy: Take union of all t values, average where both exist
+        t_overlap_all = np.unique(np.concatenate([t1_overlap, t2_overlap]))
+        n_dim = seg1.y.shape[0]  # Phase space dimension
+        y_overlap_merged = np.zeros((n_dim, len(t_overlap_all)))
+        
+        for i, t_val in enumerate(t_overlap_all):
+            # Check if this time point exists in each segment (within tolerance)
+            in_seg1 = np.any(np.abs(t1_overlap - t_val) < tol)
+            in_seg2 = np.any(np.abs(t2_overlap - t_val) < tol)
+            
+            if in_seg1 and in_seg2:
+                # CASE 1: Shared point (exists in both segments)
+                idx1 = np.argmin(np.abs(t1_overlap - t_val))  # Find closest point in seg1
+                idx2 = np.argmin(np.abs(t2_overlap - t_val))  # Find closest point in seg2
+                y_overlap_merged[:, i] = (y1_overlap[:, idx1] + y2_overlap[:, idx2]) / 2
+                
+            elif in_seg1:
+                # CASE 2: Only in seg1 (seg2 didn't evaluate here)
+                idx1 = np.argmin(np.abs(t1_overlap - t_val))
+                y_overlap_merged[:, i] = y1_overlap[:, idx1]
+                
+            else:
+                # CASE 3: Only in seg2 (seg1 didn't evaluate here)
+                idx2 = np.argmin(np.abs(t2_overlap - t_val))
+                y_overlap_merged[:, i] = y2_overlap[:, idx2]
+
+        # Concatenate all three regions to form the complete merged segment
+        # Order: [pre-overlap from seg1] + [merged overlap] + [post-overlap from seg2]
+        t_merged = np.concatenate([t1_before, t_overlap_all, t2_after])
+        y_merged = np.concatenate([y1_before, y_overlap_merged, y2_after], axis=1)
+        
+        # Create merged segment
+        merged = TrajectorySegment()
+        merged.t = t_merged
+        merged.y = y_merged
+        merged.domain = (float(t_merged[0]), float(t_merged[-1]))
+        
+        # Create piecewise merged interpolant
+        # Piecewise definition:
+        #   - Pre-overlap: use seg1.interpolant
+        #   - Overlap: average (seg1.interpolant + seg2.interpolant) / 2
+        #   - Post-overlap: use seg2.interpolant
+        # Returns None if either segment lacks interpolant (dense_output=False)
+        merged.interpolant = Trajectory._create_merged_interpolant(
+            seg1, seg2, overlap, merged.domain
+        )
+        
+        # Method string indicates multi-method composition
+        # e.g., "RK45+DOP853" shows this segment combines two different solvers
+        merged.method = f"{seg1.method}+{seg2.method}"
+        
+        # Metadata: Aggregate success flags and messages from both segments
+        merged.meta = {
+            'success': seg1.meta['success'] and seg2.meta['success'],
+            'message': f"Merged: {seg1.meta['message']} | {seg2.meta['message']}",
+        }
+        
+        return merged
+    
+    def _merge_segments_stitch(
+        self, 
+        seg1: TrajectorySegment, 
+        seg2: TrajectorySegment, 
+        overlap: Tuple[float, float]
+    ) -> TrajectorySegment:
+        """
+        Merge two segments by stitching their interpolants at the overlap point.
+        
+        Args:
+            seg1 (TrajectorySegment): First segment
+            seg2 (TrajectorySegment): Second segment
+            overlap (Tuple[float, float]): Overlap interval [a, b]
+        """
+        raise NotImplementedError("Merge policy 'stitch' not yet implemented for Trajectory class")
+    
+    def _merge_segments_left(
+        self, 
+        seg1: TrajectorySegment, 
+        seg2: TrajectorySegment, 
+        overlap: Tuple[float, float]
+    ) -> TrajectorySegment:
+        """
+        Merge two segments by using the left segment's interpolant in the overlap region.
+        
+        Args:
+            seg1 (TrajectorySegment): First segment
+            seg2 (TrajectorySegment): Second segment
+            overlap (Tuple[float, float]): Overlap interval [a, b]
+        """
+        raise NotImplementedError("Merge policy 'left' not yet implemented for Trajectory class")
+    
+    def _merge_segments_right(
+        self, 
+        seg1: TrajectorySegment, 
+        seg2: TrajectorySegment, 
+        overlap: Tuple[float, float]
+    ) -> TrajectorySegment:
+        """
+        Merge two segments by using the right segment's interpolant in the overlap region.
+        
+        Args:
+            seg1 (TrajectorySegment): First segment
+            seg2 (TrajectorySegment): Second segment
+            overlap (Tuple[float, float]): Overlap interval [a, b]
+        """
+        raise NotImplementedError("Merge policy 'right' not yet implemented for Trajectory class")
+        
+    def _validate_disjoint_domains(self) -> None:
+        """
+        Validate that all segment domains are disjoint (class invariant).
+        
+        CLASS INVARIANT:
+        ---------------
+        After merging, all segment domains MUST be disjoint (non-overlapping).
+        This is enforced by:
+          - from_segments(): Detects and merges all overlaps before validation
+          - This method: Final check that merging succeeded
+        
+        Mathematically: For domains [a_i, b_i], we require:
+          b_i <= a_{i+1} for all consecutive pairs i, i+1
+        
+        Tangent domains ([a,b] and [b,c]) are allowed (b_i = a_{i+1}).
+        Disjoint domains ([a,b] and [c,d] with b < c) are allowed.
+        Overlapping domains ([a,b] and [c,d] with c < b < d) are NOT allowed after merging.
+        
+        Checks that domains[i][1] <= domains[i+1][0] for all consecutive pairs.
+        This ensures no overlap remains after merging.
+        
+        Raises:
+            ValueError: If any domains overlap (indicates bug in merge logic)
+        """
+        for i in range(len(self.domains) - 1):
+            current_end = self.domains[i][1]
+            next_start = self.domains[i + 1][0]
+            
+            # Check for overlap: current segment extends past start of next segment
+            if current_end > next_start:
+                raise ValueError(
+                    f"Segment domains are not disjoint: "
+                    f"domain {i} ends at {current_end}, but domain {i+1} starts at {next_start}. "
+                    f"Overlapping domains detected after merging. This is a bug in merge logic."
+                )
+    
+    def _find_segment_containing(self, t: float) -> Optional[TrajectorySegment]:
+        """
+        Find segment whose domain contains time t.
+        
+        Uses linear search (optimize with binary search later if needed).
+        
+        Args:
+            t (float): Time point to locate
+        
+        Returns:
+            EuclideanTrajectorySegment if found, else None
+        """
+        for segment in self.segments:
+            if segment.in_domain(t):
+                return segment
+        return None

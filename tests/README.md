@@ -6,7 +6,17 @@ We use the `pytest` framework for our testing. To see a list of markers, run
 pytest --markers
 ```
 
-or see [conftest.py](./conftest.py)
+or see [conftest.py](./conftest.py). To run all tests, run 
+
+```bash
+pytest 
+```
+
+to run tests with a specific marker, run 
+
+```bash
+pytest -m MARKER
+```
 
 ## Pending Tests
 
