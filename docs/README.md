@@ -1,6 +1,6 @@
 # PyDynSys 
 
-Docs are auto-generated with mkdocs toolkit. See [mkdocs.yml](../mkdocs.yml) for the configuration. Latex rendering on the webpage is done in [javascript/katex-config.js](javascript/katex-config.js). This latex rendering script was AI generated, but it works so it's been left untouched. Unless something breaks, it will remain this way.
+Docs are auto-generated with mkdocs toolkit. See [mkdocs.yml](../mkdocs.yml) for the configuration. Latex rendering on the webpage is done via [javascript/katex-config.js](javascript/katex-config.js). This latex rendering script was AI generated, but it works so it's been left untouched. Unless something breaks, it will remain this way.
 
 ## Contributing
 

@@ -1,11 +1,6 @@
-# Legacy chaos_utils library for personal reference
-/LEGACY_LIB/
-
-# Legacy examples for personal reference
-/legacy_examples/
-
-# Legacy tests for personal reference
-/legacy_tests/
+# Legacy Library & Personal Notes
+/legacy/
+/notes/
 
 ### Github Python .gitignore template ### 
 
@@ -35,7 +30,7 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-## MANIFEST - Keeping this for now due to manual write, to be assessed. 
+## MANIFEST - Unignored due to manual write, subject to change.
 
 # PyInstaller
 #   Usually these files are written by a python script from a template

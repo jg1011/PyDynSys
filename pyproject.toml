@@ -18,7 +18,7 @@ keywords = [
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.10",
@@ -31,7 +31,6 @@ dependencies = [
   "numpy>=2.0.0",
   "scipy>=1.13.0",
   "sympy>=1.12.0",
-  "matplotlib>=3.9.0",
 ]
 
 [project.urls]
@@ -41,27 +40,36 @@ Issues = "https://github.com/jg1011/PyDynSys/issues"
 Changelog = "https://github.com/jg1011/PyDynSys/releases"
 
 [project.optional-dependencies]
-full = [
-  # tests
+vis = [
+  "matplotlib>=3.9.0",
+]
+test = [
   "pytest>=8.0.0",
   "pytest-cov>=4.0.0",
   "pytest-mpl>=0.17.0",
   "pillow>=10.0.0",
-  # notebooks
+]
+notebooks = [
   "jupyter>=1.0.0",
   "ipykernel>=6.0.0",
   "nbformat>=5.9.0",
   "nbconvert>=7.0.0",
-  # dev
-  "mypy>=1.8.0",
-  "black>=23.0.0",
-  "ruff>=0.3.0",
-  # docs
+]
+docs = [
   "mkdocs>=1.5.0",
   "mkdocs-material>=9.0.0",
   "mkdocstrings[python]>=0.24.0",
   "mkdocs-jupyter==0.25.0",
-  "pymdown-extensions==10.16"
+  "pymdown-extensions==10.16",
+]
+dev = [
+  "PyDynSys[test, notebooks]",
+  "mypy>=1.8.0",
+  "black>=23.0.0",
+  "ruff>=0.3.0",
+]
+full = [
+  "PyDynSys[vis, dev, docs]",
 ]
 
 [tool.setuptools]

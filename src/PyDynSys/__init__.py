@@ -1,20 +1,14 @@
 """
-PyDynSys: Python Dynamical Systems Library
+PyDynSys: A mathematically mature Python dynamical systems library.
 
-A library for working with dynamical systems in Euclidean space, providing:
-- Autonomous and non-autonomous system support
-- Symbolic to numerical system conversion
-- Trajectory computation and composition
-- Phase space constraints and time horizons
+This package provides both symbolic and functional support for the analysis
+of dynamical systems through an object-oriented lens.
 """
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
-# Expose submodules
-from . import core, vis
-
+from . import core
 
 __all__ = [
-    'core',
-    'vis',
+    'core',  
 ]

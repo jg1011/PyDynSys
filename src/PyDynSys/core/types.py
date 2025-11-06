@@ -1,6 +1,6 @@
-"""Type definitions for PyFlow dynamical systems."""
+"""Type definitions for PyDynSys dynamical systems."""
 
-from typing import Union, List, Callable, Dict, Tuple, Any, Literal
+from typing import Union, List, Callable, Dict, Tuple, Any, Literal, Optional, Set
 from dataclasses import dataclass
 from numpy.typing import NDArray
 import numpy as np
@@ -9,23 +9,24 @@ import sympy as syp
 
 ### Vector Field Types ###
 
+# NOTE: We use explicit Callable types instead of type aliases to avoid type bloat.
+# For callable-only vector fields, use:
+#   - Autonomous: Callable[[NDArray[np.float64]], NDArray[np.float64]]
+#   - Non-autonomous: Callable[[NDArray[np.float64], float], NDArray[np.float64]]
+# For dual representation (symbolic + callable), use the VectorField class from euclidean.vector_field
 
-AutonomousVectorField = Callable[[NDArray[np.float64]], NDArray[np.float64]]
+VectorFieldCallable = Union[
+    Callable[[NDArray[np.float64]], NDArray[np.float64]],  # Autonomous: F(x) -> dx/dt
+    Callable[[NDArray[np.float64], float], NDArray[np.float64]]  # Non-autonomous: F(x, t) -> dx/dt
+]
 """
-Vector field for autonomous systems: F: R^n → R^n
-Maps state vector x to derivative dx/dt = F(x)
-"""
+Union type for callable vector field functions (internal use only).
 
-NonAutonomousVectorField = Callable[[NDArray[np.float64], float], NDArray[np.float64]]
-"""
-Vector field for non-autonomous systems: F: R^n × R → R^n
-Maps (state x, time t) to derivative dx/dt = F(x, t)
-"""
+Used internally in SymbolicToVectorFieldResult to represent the compiled
+callable result from SymbolicSystemBuilder.
 
-VectorField = Union[AutonomousVectorField, NonAutonomousVectorField]
-"""
-Union type for any vector field representation.
-NOTE: For type safety, prefer specific types in implementations.
+NOTE: The primary vector field representation is the VectorField class
+(in euclidean.vector_field), which provides dual symbolic/callable forms.
 """
 
 
@@ -99,6 +100,85 @@ class TrajectoryCacheKey:
     initial_conditions: Tuple[float, ...]
     initial_time: float
     t_eval_tuple: Tuple[float, ...]
+
+
+@dataclass
+class TrajectoryCacheQuery:
+    """
+    Mutable query for cache operations (clear, replace).
+    
+    Supports partial matching: None fields match any value (wildcard).
+    
+    This enables flexible cache management:
+    - Clear all trajectories from a specific initial state
+    - Clear all trajectories starting at a specific time
+    - Clear a specific trajectory
+    
+    Examples:
+        # Clear all trajectories from x0
+        query = TrajectoryCacheQuery(initial_conditions=tuple(x0))
+        
+        # Clear specific trajectory
+        query = TrajectoryCacheQuery(
+            initial_conditions=tuple(x0),
+            initial_time=0.0,
+            t_eval_tuple=tuple(t_eval)
+        )
+    """
+    initial_conditions: Optional[Tuple[float, ...]] = None
+    initial_time: Optional[float] = None
+    t_eval_tuple: Optional[Tuple[float, ...]] = None
+    
+    def matches(self, key: TrajectoryCacheKey) -> bool:
+        """
+        Check if this query matches a cache key.
+        
+        None fields act as wildcards (match any value).
+        
+        Args:
+            key: Cache key to test against
+            
+        Returns:
+            True if query matches key (all non-None fields match)
+        """
+        if self.initial_conditions is not None:
+            if self.initial_conditions != key.initial_conditions:
+                return False
+        
+        if self.initial_time is not None:
+            # Use tolerance for float comparison
+            if abs(self.initial_time - key.initial_time) > 1e-10:
+                return False
+        
+        if self.t_eval_tuple is not None:
+            if self.t_eval_tuple != key.t_eval_tuple:
+                return False
+        
+        return True
+    
+    def to_key(self) -> TrajectoryCacheKey:
+        """
+        Convert to immutable key (requires all fields set).
+        
+        Returns:
+            TrajectoryCacheKey with all fields set
+            
+        Raises:
+            ValueError: If any field is None
+        """
+        if self.initial_conditions is None:
+            raise ValueError("initial_conditions required for key conversion")
+        if self.initial_time is None:
+            raise ValueError("initial_time required for key conversion")
+        if self.t_eval_tuple is None:
+            raise ValueError("t_eval_tuple required for key conversion")
+        
+        return TrajectoryCacheKey(
+            initial_conditions=self.initial_conditions,
+            initial_time=self.initial_time,
+            t_eval_tuple=self.t_eval_tuple
+        )
+
 
 @dataclass
 class SciPyIvpSolution:
@@ -193,3 +273,4 @@ integration where both segments share x(t_0) at the tangent point.
 
 Note: Only 'average' is implemented in current version. Others raise NotImplementedError.
 """
+

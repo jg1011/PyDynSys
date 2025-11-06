@@ -1,15 +1,18 @@
-# PyDynSys
+# Welcome to PyDynSys
 
-PyDynSys is a mathematically mature Python dynamical systems library, providing both symbolic and functional support for the analysis of such systems through an object-oriented lens.
+**PyDynSys** is a powerful, intuitive Python library for the analysis of continuous-time dynamical systems. It provides a high-level, object-oriented API for defining, solving, and analyzing systems from their symbolic equations or numerical vector fields.
 
-Our mission, fundamentally, is to consolidate methods and examples concerning dynamical systems—from the elementary to the cutting-edge—in an easily usable Python library; to provide significant pedagogical value for the student and researcher alike, and to further stimulate the curiosity necessary to motivate further developments in this rich branch of mathematics. 
+Developed with researchers, engineers, and students in mind, `PyDynSys` aims to make the exploration of complex systems both simple and mathematically robust.
 
-Our object-oriented architecture facilitates this ambitious mission by structuring both symbolic and numerical capabilities in a unified framework. This allows for both the broad applicability of our utilities and the seamless development of new functionality.
+## Key Features
 
-This will not be possible without extensive community effort. We discuss contribution [here](contributing/contributing.md).
+- **Symbolic & Functional Support**: Initialize systems with either `Sympy` equations or a callable Python function, providing maximum flexibility.
+- **Dual System Types**: First-class support for both **Autonomous** (`dx/dt = F(x)`) and **Non-Autonomous** (`dx/dt = F(x, t)`) systems.
+- **Robust Solvers**: Leverages the powerful, adaptive solvers from `scipy.integrate.solve_ivp` under the hood.
+- **Bidirectional Integration**: Effortlessly solve trajectories forward and backward in time from any initial condition.
+- **Rich Trajectory Objects**: Work with trajectory data as first-class objects, with support for slicing, interpolation, and analysis.
+- **Property Detection**: (Future) Automatically detect and compose systems with properties like linearity or Hamiltonian structure.
 
-## Versioning
+## Getting Started
 
-Versions 0.x.y are purely experimental and not intended for consumption. They're poorly documented, and were just the necessary sequence of steps required taken to port over legacy functionality into a framework robust enough to facilitate our ambitious goals.
-
-Versions 1.x.y support only Euclidean dynamical systems, but in future versions we plan to support more general systems (e.g. monoid $T$, non-euclidean $X$) and stochastic systems. To work on these core changes, see the relevant feature branches. 
+Ready to dive in? Check out the **[Quickstart Guide](getting_started/quickstart.md)** to define and solve your first dynamical system in just a few lines of code. 
