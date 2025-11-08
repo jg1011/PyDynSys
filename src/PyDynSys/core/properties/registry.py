@@ -15,7 +15,6 @@ _ALL_PROPERTIES: FrozenSet[str] = frozenset({
     # 'hamiltonian',  # System is Hamiltonian: preserves symplectic structure
     # 'planar',       # System is 2D: enables fixed-point classification
     # 'gradient',     # System is gradient: dx/dt = -∇V(x) for potential V(x)
-    # 'conservative', # System conserves energy
 })
 
 

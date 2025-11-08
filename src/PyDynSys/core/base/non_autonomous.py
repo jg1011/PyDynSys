@@ -16,11 +16,11 @@ import sympy as syp
 from .common import _DynSys
 from ..properties.registry import _PropertyRegistry
 from ..support.vector_field import NonAutVectorField
-from ..support.trajectory import TrajectorySegment, Trajectory
+from ..support.trajectory import Trajectory
 from ..support.phase_space import PhaseSpace
 from ..support.time_horizon import TimeHorizon
+from ..support.cache import TrajectoryCache, TrajectoryCacheKey
 from ..types import (
-    TrajectoryCacheKey, 
     SciPyIvpSolution,
     SymbolicODE,
     SystemParameters
@@ -59,34 +59,22 @@ class _NonAutDynSys(ABC, _DynSys, _PropertyRegistry):
     
     
     @abstractmethod
-    def trajectory(
+    def _solve_trajectory(
         self,
         initial_state: NDArray[np.float64],
         t0: float,
         t_span: Tuple[float, float],
         t_eval: NDArray[np.float64],
-        method: str = 'RK45',
-        dense_output: bool = True
+        **solver_kwargs: Any
     ) -> Trajectory:
         """
-        Solve initial value problem: dx/dt = F(x, t), x(t_0) = x_0.
+        Primitive operation for solving an IVP. Subclasses must implement this.
         
-        Abstract method - subclasses implement solver logic.
-        
-        Args:
-            initial_state: Initial condition x0
-            t0: Initial time (REQUIRED for non-autonomous systems)
-            t_span: Integration bounds (t_start, t_end)
-            t_eval: Evaluation time points
-            method: Solver method
-            dense_output: Whether to generate interpolant
-            
-        Returns:
-            Trajectory: Trajectory object
+        This method should contain ONLY the solver-specific logic and should NOT
+        implement any caching or validation.
         """
         pass
-    
-    
+
     @property
     @abstractmethod
     def vector_field(self) -> Callable[[NDArray[np.float64], float], NDArray[np.float64]]:
@@ -107,6 +95,54 @@ class _NonAutDynSys(ABC, _DynSys, _PropertyRegistry):
         Abstract property - subclasses provide implementation.
         """
         pass
+
+    @abstractmethod
+    def get_system_signature(self) -> tuple:
+        """
+        Return a unique, hashable signature for the system's current state.
+
+        This is used by the caching system to detect if the system's defining
+        parameters have changed.
+        """
+        pass
+
+    ### --- Public API --- ###
+
+    def trajectory(
+        self,
+        initial_state: NDArray[np.float64],
+        t0: float,
+        t_span: Tuple[float, float],
+        t_eval: NDArray[np.float64],
+        **solver_kwargs: Any
+    ) -> Trajectory:
+        """
+        Solve initial value problem: dx/dt = F(x, t), x(t_0) = x_0.
+        
+        This method acts as a "template," handling the caching and validation
+        scaffolding before delegating the core computation to the subclass's
+        _solve_trajectory implementation.
+        """
+        if self._trajectory_cache is None:
+            return self._solve_trajectory(initial_state, t0, t_span, t_eval, **solver_kwargs)
+
+        # --- Caching Template Logic ---
+        raw_key = TrajectoryCacheKey(
+            system_signature=self.get_system_signature(),
+            initial_state=initial_state,
+            t_span=t_span,
+            t_eval=t_eval,
+            t0=t0,
+            solver_options=solver_kwargs
+        )
+
+        cached_traj = self._trajectory_cache.get(raw_key)
+        if cached_traj:
+            return cached_traj
+        
+        new_traj = self._solve_trajectory(initial_state, t0, t_span, t_eval, **solver_kwargs)
+        self._trajectory_cache.insert(raw_key, new_traj)
+        return new_traj
 
 
 class NonAutDynSys(_NonAutDynSys):
@@ -134,7 +170,8 @@ class NonAutDynSys(_NonAutDynSys):
         dimension: int, 
         vector_field: Union[Callable[[NDArray[np.float64], float], NDArray[np.float64]], NonAutVectorField],
         phase_space: PhaseSpace = None,
-        time_horizon: TimeHorizon = None
+        time_horizon: TimeHorizon = None,
+        cache_size: int | None = 128
     ):
         """
         Initialize non-autonomous system.
@@ -146,6 +183,7 @@ class NonAutDynSys(_NonAutDynSys):
                         otherwise defaults to X = R^n
             time_horizon: Time domain T subset R. If None, uses vector_field's time_horizon if available,
                         otherwise defaults to T = R
+            cache_size: The number of recent trajectories to cache. If None or 0, caching is disabled.
             
         Raises:
             ValueError: If dimension <= 0 or phase_space dimension mismatch
@@ -199,7 +237,7 @@ class NonAutDynSys(_NonAutDynSys):
         # Set instance attributes
         self.dimension = dimension
         self.phase_space = phase_space
-        self._solutions_cache: dict = {}
+        self._trajectory_cache = TrajectoryCache(size=cache_size) if cache_size and cache_size > 0 else None
         
         # Initialize property registry (initializes _properties dict)
         _PropertyRegistry.__init__(self)
@@ -315,6 +353,12 @@ class NonAutDynSys(_NonAutDynSys):
     ### --- Abstract Method Implementations --- ###
     
     
+    def get_system_signature(self) -> tuple:
+        # This is a placeholder implementation.
+        if self._vector_field_repr:
+            return (str(self._vector_field_repr.symbolic_expr),)
+        return (self._vector_field.__hash__(),)
+
     @property
     def vector_field(self) -> Callable[[NDArray[np.float64], float], NDArray[np.float64]]:
         """
@@ -344,15 +388,13 @@ class NonAutDynSys(_NonAutDynSys):
         return None
     
     
-    def trajectory(
+    def _solve_trajectory(
         self,
         initial_state: NDArray[np.float64],
         t0: float,
         t_span: Tuple[float, float],
         t_eval: NDArray[np.float64],
-        method: str = 'RK45',
-        dense_output: bool = True,
-        validate: bool = True
+        **solver_kwargs: Any
     ) -> Trajectory:
         """
         Solve initial value problem: dx/dt = F(x, t), x(t_0) = x_0.
@@ -384,6 +426,7 @@ class NonAutDynSys(_NonAutDynSys):
                        or t_eval points outside valid range
         """
         # Validation (optional for performance)
+        validate = solver_kwargs.pop('validate', True)
         if validate:
             self._validate_state(initial_state)
             self._validate_time_span(t_span)
@@ -414,24 +457,10 @@ class NonAutDynSys(_NonAutDynSys):
                     )
                 self._validate_t_eval(t_eval, t_span)
         
-        # ====================================================================
-        # CACHING STRATEGY 
-        # ====================================================================
-        # CRITICAL: for non-autonomous systems: initial_time t0 is part of the cache key!
-        # 
-        # Unlike autonomous systems where time-translation doesn't matter,
-        # non-autonomous systems have F(x,t) depending explicitly on time.
-        cache_key = TrajectoryCacheKey(
-            initial_conditions=tuple(initial_state),
-            initial_time=t0,  # Use actual t0 parameter 
-            t_eval_tuple=tuple(t_eval)
-        )
-        
-        # Cache hit: Return previously computed trajectory
-        if cache_key in self._solutions_cache:
-            return self._solutions_cache[cache_key]
-        
         # Solve IVP
+        method = solver_kwargs.get('method', 'RK45')
+        dense_output = solver_kwargs.get('dense_output', True)
+
         if spans_around_t0:
             # BIDIRECTIONAL CASE: t0 is interior to [min(t_eval), max(t_eval)]
             sol_backward_raw, sol_forward_raw = self._solve_bidirectional_raw(
@@ -461,8 +490,7 @@ class NonAutDynSys(_NonAutDynSys):
                 t_span=t_span,
                 y0=initial_state,
                 t_eval=t_eval,
-                method=method,
-                dense_output=dense_output
+                **solver_kwargs
             )
             
             # Wrap in segment, then trajectory
@@ -472,8 +500,7 @@ class NonAutDynSys(_NonAutDynSys):
             )
             trajectory = Trajectory.from_segments([segment])
         
-        # Cache and return
-        self._solutions_cache[cache_key] = trajectory
+        # Return trajectory
         return trajectory
     
     

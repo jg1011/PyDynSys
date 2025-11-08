@@ -15,9 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [from_time_series Factory]
 - [Lyapunov Exponent Computation]
 
-## [1.0.0] - 2025-11-06
+## [0.1.0] - 2025-11-07
 
-This is the first official, stable release of `PyDynSys`. All `v0.x.y` versions should be considered experimental, are undocumented, and should **not** be used.
+This is the first official release of `PyDynSys`. All `v0.x.y` versions are unstable, and may introduce backward-incompatible changes. We recommend consumers at this stage to keep an eye on this changelog and the docs. 
 
 ### Added
 - **Core Architecture:** Initial object-oriented framework for continuous-time dynamical systems.
@@ -28,6 +28,7 @@ This is the first official, stable release of `PyDynSys`. All `v0.x.y` versions 
 - **ODE Solvers:** Integrated `scipy.integrate.solve_ivp` as the core numerical engine for solving initial value problems.
 - **Bidirectional Integration:** Implemented support for solving trajectories both forward and backward in time from a single initial condition.
 - **Trajectory Objects:** Created a `Trajectory` class to act as a rich container for solution data, with support for interpolation.
+- **Trajectory Caching System** Created `TrajectoryCache`, `KeyNormalizer` and `TrajectoryCacheKey` classes for Trajectory cache management, utilising cachetools `LRU` framework. 
 - **Shared Infrastructure:** Implemented a `_DynSys` mixin to provide common validation logic and a solution cache.
 - **Domain Support:** Added `PhaseSpace` and `TimeHorizon` classes to define the domains of systems.
 - **Testing & CI:** Set up a test suite with `pytest` and a GitHub Actions workflow for continuous integration and code coverage reporting with Codecov.

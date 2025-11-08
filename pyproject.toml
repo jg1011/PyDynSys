@@ -26,11 +26,14 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Mathematics",
   "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Dynamical Systems",
+  "Topic :: Scientific/Engineering :: Chaos Theory",
 ]
 dependencies = [
   "numpy>=2.0.0",
   "scipy>=1.13.0",
   "sympy>=1.12.0",
+  "cachetools>=5.0.0",
 ]
 
 [project.urls]

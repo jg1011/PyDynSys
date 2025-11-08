@@ -33,21 +33,17 @@ class SymbolicToVectorFieldResult:
         - symbolic_derivatives: Cached symbolic forms for Jacobian
         - parameter_values: Substituted parameters for reference
     """
-    vector_field: Union['AutVectorField', 'NonAutVectorField']  # Forward reference
+    vector_field: Union['AutVectorField', 'NonAutVectorField']
     dimension: int
     is_autonomous: bool
 
 
 class SymbolicSystemBuilder:
     """
-    Converts symbolic ODE representations to numerical vector fields.
+    A utility class for building compiled callables and building API classes from symbolic representations. 
     
-    Handles:
-    - Parsing various symbolic input formats (str, syp.Expr, lists)
-    - Parameter substitution
-    - First-order system validation
-    - Autonomous vs non-autonomous detection
-    - Compilation to efficient numerical functions via syp.lambdify
+    Current supports public methods: 
+        - build_vector_field(equations, variables, parameters, phase_space, time_horizon) -> SymbolicToVectorFieldResult
     """
     
     @staticmethod
@@ -59,31 +55,32 @@ class SymbolicSystemBuilder:
         time_horizon: TimeHorizon = None
     ) -> SymbolicToVectorFieldResult:
         """
-        Convert symbolic ODE system to numerical vector field.
+        Convert symbolic ODE system to AutVectorField or NonAutVectorField instance. 
         
-        Auto-detects whether system is autonomous by checking if time `t` 
-        appears in any derivative after solving for dx/dt.
-        
+        - Auto-detects whether system is autonomous by checking if time `t` is present in any vectory field. 
         
         Args:
             equations (SymbolicODE): Symbolic system expressed as d(x_i)/dt - F_i(x, t), i=1,...,n
                 -> SymbolicODE = Union[List[syp.Expr], syp.Expr, str, List[str]]
                 -> str use is highly experimental and not recommended. 
             variables (List[syp.Function]): List of dependent variables as SymPy Function objects
-                -> support for strings may be supported later, but not a pressing matter.
-            parameters (SystemParameters): Optional parameter substitution dict 
+                -> support for strings may be supported in later versions.
+            parameters (SystemParameters | None): Optional parameter substitution dict 
                 -> SystemParameters = Union[Dict[str, float], Dict[syp.Symbol, float]]
+                -> Again, str use is highly experimental and not recommended.
+            phase_space (PhaseSpace | None): Optional phase space instance, used to population phase_space field of result
+            time_horizon (TimeHorizon | None): Optional time horizon instance, used to population time_horizon field of result
             
+            -> NOTE: PhaseSpace and Time horizon are not yet supported fully by VectorField APIs.
             
         Returns:
-            SymbolicToVectorFieldResult wrapper, which itself contains:
+            SymbolicToVectorFieldResult wrapper, which itself contains 3 fields:
                 - vector_field: Callable with appropriate signature
                 - dimension: Phase space dimension n
-                - is_autonomous: True <==>  partial(vector_field, t) = 0
+                - is_autonomous: True <==> partial(vector_field, t) = 0
                 
         Raises:
             ValueError: If system is not first-order 
-            
             
         Example:
             >>> t = syp.symbols('t')
@@ -145,7 +142,7 @@ class SymbolicSystemBuilder:
             vector_field = AutVectorField(
                 dimension=dimension,
                 callable_field=callable_field,
-                symbolic_expr=derivatives_substituted
+                symbolic_expr=derivatives_substituted,
             )
         else:
             callable_field = SymbolicSystemBuilder._build_nonautonomous_field(

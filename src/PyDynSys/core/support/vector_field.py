@@ -39,12 +39,13 @@ class AutVectorField:
         symbolic_expr: Optional[List[syp.Expr]] - Symbolic expressions [F_1, ..., F_n]
         callable_field: Callable[[NDArray[np.float64]], NDArray[np.float64]] - Numerical function F(x)
         phase_space: Optional[PhaseSpace] - Domain X \n 
-            -> Not necessary if being fed to an _AutonomousDynSys inheritor, but **useful** for standalone analysis. 
+            -> Not necessary if being fed to an _AutonomousDynSys inheritor, but useful for standalone anaysis.
+            -> NOTE: If not provided, a warning is issued. 
     
     Example:
         >>> vf = AutonomousVectorField(
         ...     dimension=2,
-        ...     callable_field=lambda x: np.array([x[1], -x[0]]),
+        ...     callable_field=lambda x: np.array([x[1], -x[0]]), #SHO
         ...     symbolic_expr=[x2, -x1],
         ...     phase_space=PhaseSpace.full(2)  # Optional domain
         ... )

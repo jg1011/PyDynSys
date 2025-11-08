@@ -13,9 +13,9 @@ import numpy as np
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
-    from ..types import TrajectoryCacheKey, TrajectoryCacheQuery
     from ..support.phase_space import PhaseSpace
     from ..support.trajectory import Trajectory
+    from ..support.cache import TrajectoryCache
 
 class _DynSys:
     """
@@ -24,14 +24,12 @@ class _DynSys:
     Fields (must be set by subclasses in their __init__):
         dimension: int
         phase_space: PhaseSpace
-        _solutions_cache: Dict[TrajectoryCacheKey, 'Trajectory']
+        _trajectory_cache: TrajectoryCache | None
         
     Public Methods: 
         - empty_cache()
-        - delete_cache_items()
-        - replace_cache_items()
     
-    NOTE: This mixin does NOT provide an __init__ method. Inheritors must setthese attributes themselves. 
+    NOTE: This mixin does NOT provide an __init__ method. Inheritors must set these attributes themselves. 
     This design avoids multiple inheritance issues with __init__ & allows inheritors to control their 
     constructor signature.
     """
@@ -39,7 +37,7 @@ class _DynSys:
     # Type annotations for attributes that subclasses must set
     dimension: int
     phase_space: PhaseSpace
-    _solutions_cache: Dict[TrajectoryCacheKey, 'Trajectory']
+    _trajectory_cache: TrajectoryCache | None
     
     
     ### --- Validation Methods --- ###
@@ -136,81 +134,6 @@ class _DynSys:
         
         Removes all entries from the solution cache.
         """
-        self._solutions_cache.clear()
-    
-    
-    def delete_cache_items(
-        self,
-        initial_state: Optional[NDArray[np.float64]] = None,
-        initial_time: Optional[float] = None,
-        t_eval: Optional[NDArray[np.float64]] = None
-    ) -> None:
-        """
-        Clear cached trajectories matching query.
-        
-        None parameters act as wildcards (match any value).
-        This enables flexible cache management:
-        - Clear all trajectories from a specific initial state
-        - Clear all trajectories starting at a specific time
-        - Clear a specific trajectory
-        
-        Args:
-            initial_state: If provided, only clear trajectories from this state
-            initial_time: If provided, only clear trajectories starting at this time
-            t_eval: If provided, only clear trajectories with this evaluation array
-            
-        Examples:
-            # Clear all trajectories from x0
-            sys.clear_trajectory_cache(initial_state=x0)
-            
-            # Clear specific trajectory
-            sys.clear_trajectory_cache(
-                initial_state=x0,
-                initial_time=0.0,
-                t_eval=t_eval
-            )
-        """
-        # Build query
-        query = TrajectoryCacheQuery(
-            initial_conditions=tuple(initial_state) if initial_state is not None else None,
-            initial_time=initial_time,
-            t_eval_tuple=tuple(t_eval) if t_eval is not None else None
-        )
-        
-        # Find matching keys
-        keys_to_remove = [
-            key for key in self._solutions_cache.keys()
-            if query.matches(key)
-        ]
-        
-        # Remove matches
-        for key in keys_to_remove:
-            del self._solutions_cache[key]
-    
-    
-    def replace_trajectory_cache(
-        self,
-        initial_state: NDArray[np.float64],
-        initial_time: float,
-        t_eval: NDArray[np.float64],
-        trajectory: 'Trajectory'
-    ) -> None:
-        """
-        Explicitly replace cached trajectory.
-        
-        Creates new cache entry or overwrites existing one.
-        Useful when recomputing with different solver method.
-        
-        Args:
-            initial_state: Initial condition
-            initial_time: Initial time
-            t_eval: Evaluation time points
-            trajectory: Trajectory to cache
-        """
-        key = TrajectoryCacheKey(
-            initial_conditions=tuple(initial_state),
-            initial_time=initial_time,
-            t_eval_tuple=tuple(t_eval)
-        )
-        self._solutions_cache[key] = trajectory
+        if self._trajectory_cache:
+            self._trajectory_cache.clear()
 

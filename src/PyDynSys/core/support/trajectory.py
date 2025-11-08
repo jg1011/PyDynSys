@@ -1,13 +1,63 @@
 """Trajectory representation for Euclidean dynamical systems."""
 
 from __future__ import annotations
-from typing import List, Tuple, Callable, Optional, Union, TYPE_CHECKING
+from typing import List, Tuple, Callable, Optional, Union, TYPE_CHECKING, Literal
 from dataclasses import dataclass
 import numpy as np
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
-    from ..types import SciPyIvpSolution, TrajectorySegmentMergePolicy
+    from ..types import SciPyIvpSolution
+    
+    
+### Trajectory Types ###
+
+
+TrajectorySegmentMergePolicy = Literal['average', 'left', 'right', 'stitch']
+"""
+Strategy for merging overlapping trajectory segments in EuclideanTrajectory.from_segments().
+
+WHEN OVERLAPS OCCUR:
+--------------------
+Overlapping domains arise when the same physical trajectory is computed multiple
+times over intersecting time intervals. Common scenarios:
+  1. Re-solving for comparison: Solve [0,1.5] with RK45, then [0.5,2] with DOP853
+  2. Patching numerical errors: Re-solve unstable region with tighter tolerances
+  3. Composing from cache: Merging cached trajectories to avoid recomputation
+
+MERGE POLICIES:
+---------------
+When two segments overlap on [a, b], we must decide:
+  - Which y values to use at shared evaluation points?
+  - Which interpolant to use for continuous evaluation in [a, b]?
+
+Available policies:
+- 'average' (DEFAULT): Average y values at shared evaluation points in overlap region.
+                       Takes midpoint between competing numerical approximations.
+                       Use case: Equal trust in both segments, want best estimate.
+                       
+- 'left': Prioritize left segment's values and interpolant in overlap region.
+          Use case: Left segment has higher accuracy (tighter tolerance, better method).
+          Status: Not yet implemented (raises NotImplementedError).
+          
+- 'right': Prioritize right segment's values and interpolant in overlap region.
+           Use case: Right segment has higher accuracy or is more recent computation.
+           Status: Not yet implemented (raises NotImplementedError).
+           
+- 'stitch': Use left segment's interpolant until overlap midpoint, then right's.
+            Creates continuous transition across overlap region.
+            Use case: Both segments equally valid, want smooth transition.
+            Status: Not yet implemented (raises NotImplementedError).
+
+TANGENT DOMAINS (Special Case):
+--------------------------------
+When domains touch at exactly one point (e.g., [0,1] + [1,2]), the "overlap"
+is just the boundary. The average policy automatically handles this by averaging
+the single shared point, which is correct for tangent segments from bidirectional
+integration where both segments share x(t_0) at the tangent point.
+
+Note: Only 'average' is implemented in current version. Others raise NotImplementedError.
+"""
 
 
 class TrajectorySegment: 
@@ -22,12 +72,15 @@ class TrajectorySegment:
         y (NDArray[np.float64]): Array of trajectory evaluations x(t), shape (n, len(t))
         domain (Tuple[float, float]): Time domain [t[0], t[-1]] where segment is defined
         interpolant (Optional[Callable]): Continuous interpolant x(t) on domain, or None
+            -> NOTE: This is some iff dense_output=True flag passed to solve_ivp fn.
         method (str): ODE solver method used ('RK45', 'LSODA', etc.)
         meta (Dict[str, Any]): Metadata about numerical solution (success, message, etc.)
     
     Usage:
-        Segments are created via from_scipy_solution() factory, not direct instantiation.
-        Users primarily interact with EuclideanTrajectory, which aggregates segments.
+        - Segments are created via from_scipy_solution() factory, not direct instantiation.
+        - Users primarily interact with Trajectory class, which aggregates segments. 
+        - Future versions will support factories for other solvers. 
+        
     """
     
     
@@ -65,7 +118,7 @@ class TrajectorySegment:
         
         # Enforce monotone increasing time convention
         if len(t) > 1 and t[0] > t[-1]:
-            # Backward integration detected (time decreases): reverse arrays
+            # Backward integration detected: reverse arrays
             t = t[::-1]
             y = y[:, ::-1]
         
@@ -101,6 +154,7 @@ class TrajectorySegment:
         """
         return self.domain[0] <= t <= self.domain[1]
     
+    
     def interpolant_at_time(self, t: float) -> NDArray[np.float64]:
         """
         Evaluate interpolant at time t.
@@ -132,13 +186,13 @@ class TrajectorySegment:
     
 class Trajectory: 
     """
-    Represents a numerically computed trajectory on a subset of the real line ℝ.
+    Represents a numerically computed trajectory on a subset of the real line R.
     
     A trajectory is a composition of one or more segments with disjoint domains,
     providing seamless access to the complete solution across potentially
     non-contiguous time intervals.
     
-    Key invariant: All segment domains are disjoint (validated in from_segments).
+    Key invariant: All segment domains are disjoint (validated in from_segments factory).
     
     Fields: 
         segments (List[EuclideanTrajectorySegment]): Trajectory segments in ascending domain order
@@ -336,10 +390,10 @@ class Trajectory:
                 - 'left': Use left segment in overlap
                 - 'right': Use right segment in overlap
                 - 'stitch': Left interpolant until midpoint, then right
+            -> NOTE: merge_policy is not yet implemented for all policies, only `average` is supported.
         
         Returns:
-            Trajectory: New trajectory containing all segments from both trajectories,
-                with overlaps merged according to merge_policy
+            Trajectory: New trajectory containing all segments from both trajectories with overlaps merged according to merge_policy
         
         Raises:
             ValueError: If final domains are not disjoint (merging failed)
@@ -403,6 +457,9 @@ class Trajectory:
         Example:
             >>> traj = sys.trajectory(...)  # May have multiple segments
             >>> x_5 = traj.interpolate(5.0)  # Seamlessly finds right segment
+            
+        NOTE: We implement __call__ dunder by invoking interpolate method, allowing users to instead write
+            >>> x = traj(5.0)  # Equivalent to traj.interpolate(5.0)
         """
         segment = self._find_segment_containing(t)
         
@@ -494,6 +551,14 @@ class Trajectory:
     
     def __add__(self, other: 'Trajectory') -> 'Trajectory':
         return self.merge(other)
+    
+    def __call__(self, t: float) -> NDArray[np.float64]:
+        """
+        Example: 
+            >>> traj = sys.trajectory(...)
+            >>> x = traj(5.0)  # Equivalent to traj.interpolate(5.0), nice ;)
+        """
+        return self.interpolate(t)
             
     
         ### --- Private Methods --- ###

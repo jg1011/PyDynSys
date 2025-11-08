@@ -18,8 +18,8 @@ from ..properties.registry import _PropertyRegistry
 from ..support.vector_field import AutVectorField
 from ..support.trajectory import TrajectorySegment, Trajectory
 from ..support.phase_space import PhaseSpace
+from ..support.cache import TrajectoryCache, TrajectoryCacheKey
 from ..types import (
-    TrajectoryCacheKey, 
     SciPyIvpSolution,
     SymbolicODE,
     SystemParameters
@@ -47,7 +47,7 @@ class _AutDynSys(ABC, _DynSys, _PropertyRegistry):
     not by this ABC.
     
     NOTE: For examples of usage, see the concrete implementation class
-    `AutonomousEuclideanDS` which provides factory methods and can be instantiated.
+    `AutDynSys` which provides factory methods and can be instantiated.
     """
     
     
@@ -55,34 +55,20 @@ class _AutDynSys(ABC, _DynSys, _PropertyRegistry):
     
     
     @abstractmethod
-    def trajectory(
+    def _solve_trajectory(
         self,
         initial_state: NDArray[np.float64],
         t_span: Tuple[float, float],
         t_eval: NDArray[np.float64],
-        method: str = 'RK45',
-        dense_output: bool = True
+        **solver_kwargs: Any
     ) -> Trajectory:
         """
-        Solve initial value problem: dx/dt = F(x), x(t_0) = x_0.
+        Primitive operation for solving an IVP. Subclasses must implement this.
         
-        Abstract method - subclasses implement solver logic.
-        
-        For autonomous systems, the initial time t_0 is given by t_span[0].
-        Time-translation invariance means absolute time doesn't matter.
-        
-        Args:
-            initial_state: Initial condition x0
-            t_span: Integration bounds (t_start, t_end) where t_start is the initial time
-            t_eval: Evaluation time points
-            method: Solver method
-            dense_output: Whether to generate interpolant
-            
-        Returns:
-            Trajectory: Trajectory object
+        This method should contain ONLY the solver-specific logic and should NOT
+        implement any caching or validation.
         """
         pass
-    
     
     @property
     @abstractmethod
@@ -94,16 +80,72 @@ class _AutDynSys(ABC, _DynSys, _PropertyRegistry):
         """
         pass
 
+    @abstractmethod
+    def get_system_signature(self) -> tuple:
+        """
+        Return a unique, hashable signature for the system's current state.
+
+        This is used by the caching system to detect if the system's defining
+        parameters have changed.
+        """
+        pass
+
+    ### --- Public API --- ###
+
+    def trajectory(
+        self,
+        initial_state: NDArray[np.float64],
+        t_span: Tuple[float, float],
+        t_eval: NDArray[np.float64],
+        **solver_kwargs: Any
+    ) -> Trajectory:
+        """
+        Solve initial value problem: dx/dt = F(x), x(t_0) = x_0.
+
+        This method acts as a "template," handling the caching and validation
+        scaffolding before delegating the core computation to the subclass's
+        _solve_trajectory implementation.
+        """
+        if self._trajectory_cache is None:
+            return self._solve_trajectory(initial_state, t_span, t_eval, **solver_kwargs)
+
+        # Caching Template Logic
+        raw_key = TrajectoryCacheKey(
+            system_signature=self.get_system_signature(),
+            initial_state=initial_state,
+            t_span=t_span,
+            t_eval=t_eval,
+            t0=None,  # Not used for autonomous systems
+            solver_options=solver_kwargs
+        )
+
+        cached_traj = self._trajectory_cache.get(raw_key)
+        if cached_traj:
+            return cached_traj
+        
+        new_traj = self._solve_trajectory(initial_state, t_span, t_eval, **solver_kwargs)
+        self._trajectory_cache.insert(raw_key, new_traj)
+        return new_traj
+
 
 class AutDynSys(_AutDynSys):
     """
-    Autonomous Euclidean dynamical system implementation using scipy.solve_ivp.
+    Autonomous dynamical system implementation using scipy.integrate.solve_ivp.
     
-    This is the primary public API for autonomous systems. Most users will
-    instantiate this class directly or use factory methods.
+    This is the primary public API for autonomous systems, and inherits from the _AutDynSys ABC.
     
-    Provides standard trajectory solving with bidirectional integration support.
-    Advanced users can subclass this to provide custom solvers.
+    Factories: 
+        - from_symbolic(equations, variables, parameters, phase_space) -> AutDynSys
+    
+    Inherited Abstract Methods: 
+        - trajectory(initial_state, t_span, t_eval, method, dense_output) -> Trajectory
+        - vector_field() -> AutVectorField 
+        -> NOTE: These are implemented in this concrete class, not the _AutDynSys ABC.
+    
+    Public Methods: 
+        - evolve(initial_state, t0, dt, method, validate) -> NDArray[np.float64]
+            -> Numerically solve for x(t_0 + dt) from x(t_0) using the vector field with solve_ivp fn. 
+            -> NOTE: This is a convenience method for rapid single-step integration without caching.
     
     Example:
         >>> sys = AutDynSys(
@@ -111,6 +153,14 @@ class AutDynSys(_AutDynSys):
         ...     vector_field=lambda x: np.array([x[1], -x[0]])
         ... )
         >>> traj = sys.trajectory(x0, t_span=(0, 10), t_eval=np.linspace(0, 10, 100))
+        
+    Future Work: 
+        - Flow method (phi_t(x)) implementation that uses caching and interpolation, and if necessary trajectory 
+        recomputation to compute phi_t(x) for fixed t, x. 
+            -> The idea is if exists cached trajectory with IC x_0 approx x and t in t_eval range, 
+            then phi_t(x) approx trajectory(t). If we have trajectories "either side" of x we can 
+            interpolate. We can also compute a grid of trajectories for global phi_t(x) caching on 
+            startup.  
     """
     
     
@@ -121,7 +171,8 @@ class AutDynSys(_AutDynSys):
         self, 
         dimension: int, 
         vector_field: Union[Callable[[NDArray[np.float64]], NDArray[np.float64]], AutVectorField],
-        phase_space: PhaseSpace = None
+        phase_space: PhaseSpace = None,
+        cache_size: int | None = 128
     ):
         """
         Initialize autonomous system.
@@ -131,6 +182,7 @@ class AutDynSys(_AutDynSys):
             vector_field: Function F(x) -> dx/dt mapping R^n -> R^n, or AutonomousVectorField
             phase_space: Phase space X subset R^n. If None, uses vector_field's phase_space if available,
                         otherwise defaults to X = R^n
+            cache_size: The number of recent trajectories to cache. If None or 0, caching is disabled.
             
         Raises:
             ValueError: If dimension <= 0 or phase_space dimension mismatch
@@ -166,7 +218,7 @@ class AutDynSys(_AutDynSys):
         # Set instance attributes
         self.dimension = dimension
         self.phase_space = phase_space
-        self._solutions_cache: dict = {}
+        self._trajectory_cache = TrajectoryCache(size=cache_size) if cache_size and cache_size > 0 else None
         
         # Initialize property registry (initializes _properties dict)
         _PropertyRegistry.__init__(self)
@@ -240,34 +292,19 @@ class AutDynSys(_AutDynSys):
         )
     
     
-    @classmethod
-    def from_vector_field(
-        cls,
-        vector_field: Union[Callable[[NDArray[np.float64]], NDArray[np.float64]], AutVectorField],
-        dimension: int,
-        phase_space: PhaseSpace = None
-    ) -> 'AutDynSys':
-        """
-        Factory: Direct construction from vector field.
-        
-        Args:
-            vector_field: Vector field function or AutVectorField
-            dimension: Phase space dimension n
-            phase_space: Phase space X subset R^n (defaults to X = R^n or vector_field's phase_space)
-            
-        Returns:
-            AutDynSys instance
-        """
-        return cls(
-            dimension=dimension,
-            vector_field=vector_field,
-            phase_space=phase_space
-        )
-    
     
     ### --- Abstract Method Implementations --- ###
     
     
+    def get_system_signature(self) -> tuple:
+        # This is a placeholder implementation. A more robust version would
+        # inspect the vector field's bytecode or a user-provided params dict.
+        # For symbolic fields, it should hash the equations.
+        if self._vector_field_repr:
+            return (str(self._vector_field_repr.symbolic_expr),)
+        return (self._vector_field.__hash__(),)
+
+
     @property
     def vector_field(self) -> Callable[[NDArray[np.float64]], NDArray[np.float64]]:
         """
@@ -276,27 +313,12 @@ class AutDynSys(_AutDynSys):
         return self._vector_field
     
     
-    @property
-    def symbolic_vector_field(self) -> Optional[List[syp.Expr]]:
-        """
-        Symbolic representation of vector field (if available).
-        
-        Returns:
-            List of symbolic expressions [F_1, ..., F_n], or None if not available
-        """
-        if self._vector_field_repr:
-            return self._vector_field_repr.symbolic_expr
-        return None
-    
-    
-    def trajectory(
+    def _solve_trajectory(
         self,
         initial_state: NDArray[np.float64],
         t_span: Tuple[float, float],
         t_eval: NDArray[np.float64],
-        method: str = 'RK45',
-        dense_output: bool = True,
-        validate: bool = True
+        **solver_kwargs: Any
     ) -> Trajectory:
         """
         Solve initial value problem: dx/dt = F(x), x(t_0) = x_0 over interval I.
@@ -332,20 +354,11 @@ class AutDynSys(_AutDynSys):
                        or t_eval points outside valid range (only if validate=True)
         """
         # Validation (optional for performance)
+        validate = solver_kwargs.pop('validate', True)
         if validate:
             self._validate_state(initial_state)
             self._validate_time_span(t_span)
             self._validate_t_eval(t_eval, t_span)
-
-        cache_key = TrajectoryCacheKey(
-            initial_conditions=tuple(initial_state),
-            initial_time=t_span[0],  # Store t_0 (typically 0 for autonomous, but can vary)
-            t_eval_tuple=tuple(t_eval)
-        )
-        
-        # Cache hit: Return previously computed trajectory
-        if cache_key in self._solutions_cache:
-            return self._solutions_cache[cache_key]
         
         # ====================================================================
         # BIDIRECTIONAL INTEGRATION DETECTION
@@ -357,6 +370,9 @@ class AutDynSys(_AutDynSys):
         needs_backward = t_0 > t_min
         # Check if we need forward integration (t_0 below maximum)
         needs_forward = t_0 < t_max
+        
+        method = solver_kwargs.get('method', 'RK45')
+        dense_output = solver_kwargs.get('dense_output', True)
         
         if needs_backward and needs_forward:
             # BIDIRECTIONAL CASE: t_0 is interior to [t_min, t_max]
@@ -394,8 +410,7 @@ class AutDynSys(_AutDynSys):
             )
             trajectory = Trajectory.from_segments([segment])
         
-        # Cache and return
-        self._solutions_cache[cache_key] = trajectory
+        # Return trajectory
         return trajectory
     
     
@@ -447,6 +462,13 @@ class AutDynSys(_AutDynSys):
         
         return result.y[:, 0]  # Extract final state vector
     
+    
+    ### --- Dunder Methods --- ### 
+    
+    def __repr__(self) -> str:
+        return f"AutDynSys(dimension={self.dimension}, phase_space={self.phase_space}, vector_field={self.vector_field})"
+    def __str__(self) -> str:
+        return f"AutDynSys(dimension={self.dimension}, phase_space={self.phase_space}, vector_field={self.vector_field})"
     
     ### --- Private Methods --- ###
     
