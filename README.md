@@ -9,13 +9,14 @@
 
 ## Key Features
 
-*   **Symbolic & Functional Support**: Initialise systems with either `Sympy` or a callable function, both yield full functionality by `Sympy` lambdification.
+*   **Symbolic & Functional Support**: Initialise systems with either `Sympy`, a callable function, or both! 
 *   **Property Detection**: Automatically detect and compose systems with properties like linearity or Hamiltonian structure, providing additional 
 insight and functionality at no expense. 
 *   **Dual System Types**: First-class support for both `Autonomous` (dx/dt = F(x)) and `Non-Autonomous` (dx/dt = F(x, t)) systems with our public-facing API.
-*   **Built-in Solvers**: Leverages the robust, adaptive solvers from `scipy.integrate.solve_ivp` under the hood for our public APIs, while still allowing advanced consumers to utilise local solvers.
+*   **Built-in Solvers**: Leverages the robust, adaptive solvers from `scipy.integrate.solve_ivp` under the hood for our public APIs, while allowing advanced consumers to override and use custom solvers. 
 *   **Bidirectional Integration**: Effortlessly compute trajectories forward and backward in time from any initial condition.
-*   **Rich Trajectory Objects**: Work with trajectory data as standalone objects, with support for interpolation, analysis, caching & visualisation. 
+*   **Rich Trajectory Objects**: Work with trajectory data as standalone objects, with support for interpolation, analysis & visualisation. 
+*   **Smart Trajectory Caching System**: In-built LRU trajectory caching system, with normalised key-system and consumer-level customisability, attached to top-level inheritors.  
 
 ## Installation
 
